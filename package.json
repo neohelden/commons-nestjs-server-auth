@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@neohelden/eslint-config": "1.2.48",
-    "@nestjs/core": "10.2.5",
     "@types/jest": "29.5.4",
     "@types/jsonwebtoken": "9.0.2",
     "@types/node": "20.6.0",
