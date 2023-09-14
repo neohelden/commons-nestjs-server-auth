@@ -1,0 +1,35 @@
+name: Build and Release SDK
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+  pull_request:
+
+jobs:
+  build:
+    uses: neohelden/actions-library/.github/workflows/build-and-deploy-container-image.yaml@main
+    with:
+      release-branch: main
+      main-branch: main
+      container-verify-cmd: test 1
+      auto-merge-dependabot-enabled: true
+      release-extra-plugins: '@semantic-release/npm'
+      sonar-inclusions: '**/*.ts'
+      sonar-exclusions: '**/*.test.ts'
+      prettier-source-paths: 'src/**/*.ts'
+      sonar-test-inclusions: '**/*.test.ts'
+
+    secrets:
+      image-registry-username: ${{ secrets.HARBOR_USERNAME }}
+      image-registry-token: ${{ secrets.HARBOR_TOKEN }}
+      gh-app-id: ${{ secrets.GH_APP_ID }}
+      gh-app-private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      global-audit-ci-repo-key: ${{ secrets.GLOBAL_AUDIT_CI_REPO_KEY }}
+      sonar-token: ${{ secrets.SONAR_TOKEN }}
+      argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      asana-github-api-token: ${{ secrets.ASANA_GITHUB_API_TOKEN }}
+      npm-automation-token: ${{ secrets.NPM_AUTOMATION_TOKEN }}
