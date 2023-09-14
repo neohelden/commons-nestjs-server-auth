@@ -44,5 +44,5 @@
     "memory": "4gb",
     "storage": "20gb"
   },
-  "postCreateCommand": "sudo chown node -R node_modules; git config --global --add safe.directory ${containerWorkspaceFolder}; yarn install"
+  "postCreateCommand": "sudo chown node -R node_modules; git config --global --add safe.directory ${containerWorkspaceFolder}; git config --global url.\"https://github.com/\".insteadOf git@github.com:; yarn install"
 }
