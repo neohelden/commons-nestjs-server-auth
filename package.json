@@ -1,7 +1,7 @@
 {
   "name": "@neohelden/neohelden-commons-nestjs-server-auth",
   "version": "0.0.0",
-  "repository": "git@github.com:neohelden/neohelden-nestjs-server-auth-commons.git",
+  "repository": "git@github.com:neohelden/neohelden-commons-nestjs-server-auth.git",
   "author": "msg systems ag",
   "license": "UNLICENSED",
   "private": false,
@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@neohelden/eslint-config": "1.2.48",
-    "@nestjs/core": "^10.2.5",
+    "@nestjs/core": "10.2.5",
     "@types/jest": "29.5.4",
-    "@types/jsonwebtoken": "^9.0.2",
+    "@types/jsonwebtoken": "9.0.2",
     "@types/node": "20.6.0",
     "axios": "1.5.0",
     "eslint": "8.49.0",
