@@ -25,7 +25,7 @@ export default class JwksKeySource implements KeySource {
       this.httpService.get<{ keys: JsonWebKey[] }>(this.jwksUri)
     );
 
-    const keys = response.data.keys as JsonWebKey[];
+    const keys = response.data.keys;
 
     return Promise.all(keys.map((key) => this.toPublicKey(key)));
   }
