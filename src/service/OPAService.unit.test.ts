@@ -3,7 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { Observable } from "rxjs";
 import { ConfigService } from "@nestjs/config";
 import OpaJwtPrincipal from "../OpaJwtPrincipal";
-import JWTPrincipal from "../JWTPrincipal";
+import JWTPrincipal from "../JwtPrincipal";
 
 describe("opaService", () => {
   let opaService: OPAService;
