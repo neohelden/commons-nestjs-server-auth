@@ -1,5 +1,5 @@
 {
-  "name": "@neohelden/neohelden-commons-nestjs-server-auth",
+  "name": "@neohelden/commons-nestjs-server-auth",
   "version": "0.0.0",
   "repository": "git@github.com:neohelden/neohelden-commons-nestjs-server-auth.git",
   "author": "msg systems ag",

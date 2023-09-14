@@ -10,19 +10,21 @@ The decisions are available to the Application using decorators.
 An example for OPA enabled decision is: 
 
 ```typescript
-import OPAGuard from "@neohelden/nestjs-commons-server-auth";
 import {
   Get,
   UseGuards,
-} from "@nestjs/common";
-import OpaJwtPrincipal from "./auth/OpaJwtPrincipal";
-import OPAPrincipal from "./auth/decorator/OPAPrincipal";
+} from "@nestjs/common";import {
+  OPAGuard,
+  OPAPrincipal,
+  OpaJwtPrincipal,
+} from "@neohelden/commons-nestjs-server-auth";
 
 class Controller {
     @UseGuards(OPAGuard)
     @Get("/")
     public getSomethingSecure(@OPAPrincipal(): opaPrincipal: OpaJwtPrincipal) {
         const constraints = opaPrincipal.constraints;
+        return constraints
     }
 }
 ```
