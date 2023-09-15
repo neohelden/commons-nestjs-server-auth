@@ -27,7 +27,7 @@ export default class JwksKeySource implements KeySource {
 
     const keys = response.data.keys;
 
-    return Promise.all(keys.map((key) => this.toPublicKey(key)));
+    return Promise.all(keys.map(this.toPublicKey.bind(this)));
   }
 
   private async toPublicKey(key: JsonWebKey): Promise<LoadedPublicKey> {
