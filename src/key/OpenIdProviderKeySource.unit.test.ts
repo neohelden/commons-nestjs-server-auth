@@ -14,7 +14,7 @@ describe("openIdProviderKeySource", () => {
     source = new OpenIdProviderKeySource(
       "https://example.com",
       "https://example.com",
-      httpService as unknown as HttpService
+      httpService as unknown as HttpService,
     );
   });
 
@@ -29,7 +29,7 @@ describe("openIdProviderKeySource", () => {
               },
             } as never);
             subscriber.complete();
-          })
+          }),
         )
         .mockReturnValue(
           new Observable((subscriber) => {
@@ -48,7 +48,7 @@ describe("openIdProviderKeySource", () => {
               },
             } as never);
             subscriber.complete();
-          })
+          }),
         );
 
       const keys = await source.loadKeysFromSource();
@@ -60,7 +60,7 @@ describe("openIdProviderKeySource", () => {
           expect.anything(),
           expect.anything(),
           "https://example.com",
-          "RS256"
+          "RS256",
         ),
       ]);
     });

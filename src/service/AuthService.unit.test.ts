@@ -36,7 +36,7 @@ describe("authentication", () => {
     authService = new AuthService(
       publicKeyLoader as never,
       configService as never,
-      httpService as never
+      httpService as never,
     );
   });
 
@@ -54,29 +54,29 @@ describe("authentication", () => {
             location: "https://example.com",
             requiredIssuer: "https://example.com",
           },
-        ])
+        ]),
       );
       configService.get.mockReturnValue("");
 
       authService = new AuthService(
         publicKeyLoader as unknown as PublicKeyLoader,
         configService as unknown as ConfigService,
-        httpService as unknown as HttpService
+        httpService as unknown as HttpService,
       );
 
       expect(publicKeyLoader.addKeySource).toHaveBeenCalledWith(
         new OpenIdProviderKeySource(
           "https://example.com",
           "https://example.com",
-          httpService as unknown as HttpService
-        )
+          httpService as unknown as HttpService,
+        ),
       );
       expect(publicKeyLoader.addKeySource).toHaveBeenCalledWith(
         new JwksKeySource(
           "https://example.com",
           "https://example.com",
-          httpService as unknown as HttpService
-        )
+          httpService as unknown as HttpService,
+        ),
       );
     });
   });
@@ -103,27 +103,27 @@ describe("authentication", () => {
           key.publicKey,
           null as unknown as KeySource,
           "https://example.com",
-          "RSA"
-        )
+          "RSA",
+        ),
       );
 
       await authService.auth({}, token);
 
       expect(publicKeyLoader.getLoadedPublicKey).toHaveBeenCalledWith(
         "test",
-        "test"
+        "test",
       );
     });
 
     it("should throw when key is not available", async () => {
       await expect(authService.auth({}, token)).rejects.toThrow(
-        "ERR_AUTH_NO_PUBLIC_KEY"
+        "ERR_AUTH_NO_PUBLIC_KEY",
       );
     });
 
     it("should throw when key is not an JWT", async () => {
       await expect(authService.auth({}, "not a token")).rejects.toThrow(
-        "ERR_AUTH_INVALID_TOKEN"
+        "ERR_AUTH_INVALID_TOKEN",
       );
     });
 
@@ -132,7 +132,7 @@ describe("authentication", () => {
         algorithm: "RS256",
       });
       await expect(authService.auth({}, token)).rejects.toThrow(
-        "ERR_AUTH_INVALID_TOKEN"
+        "ERR_AUTH_INVALID_TOKEN",
       );
     });
 
@@ -152,12 +152,12 @@ describe("authentication", () => {
           key.publicKey,
           null as unknown as KeySource,
           "https://example.com",
-          "RSA"
-        )
+          "RSA",
+        ),
       );
 
       await expect(authService.auth({}, token)).rejects.toThrow(
-        "invalid signature"
+        "invalid signature",
       );
     });
   });

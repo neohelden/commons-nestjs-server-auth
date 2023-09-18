@@ -57,7 +57,7 @@ describe("opaService", () => {
           },
         });
         s.complete();
-      }) as never
+      }) as never,
     );
 
     const result = await opaService.auth(
@@ -65,7 +65,7 @@ describe("opaService", () => {
       token,
       request.method,
       request.url,
-      request.headers
+      request.headers,
     );
 
     expect(result).toStrictEqual(
@@ -73,7 +73,7 @@ describe("opaService", () => {
         ["allow", true],
         ["constaint1", "test"],
         ["constraint2", ["test1", "test2"]],
-      ])
+      ]),
     );
     expect(request.opaPrincipal).toStrictEqual(
       new OpaJwtPrincipal(
@@ -83,8 +83,8 @@ describe("opaService", () => {
           ["allow", true],
           ["constaint1", "test"],
           ["constraint2", ["test1", "test2"]],
-        ])
-      )
+        ]),
+      ),
     );
     expect(httpService.post).toHaveBeenCalledWith(
       "https://example.com/v1/data/test",
@@ -100,7 +100,7 @@ describe("opaService", () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   });
 
@@ -109,7 +109,7 @@ describe("opaService", () => {
       new Observable((s) => {
         s.error("test");
         s.complete();
-      }) as never
+      }) as never,
     );
 
     const result = opaService.auth(
@@ -117,7 +117,7 @@ describe("opaService", () => {
       token,
       request.method,
       request.url,
-      request.headers
+      request.headers,
     );
 
     await expect(result).rejects.toBe("ERR_OPA_UNAIAVAILABLE");
@@ -135,7 +135,7 @@ describe("opaService", () => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   });
 
@@ -150,7 +150,7 @@ describe("opaService", () => {
           },
         });
         s.complete();
-      }) as never
+      }) as never,
     );
 
     const result = opaService.auth(
@@ -158,7 +158,7 @@ describe("opaService", () => {
       token,
       request.method,
       request.url,
-      request.headers
+      request.headers,
     );
 
     await expect(result).rejects.toThrow("ERR_OPA_FORBIDDEN");
@@ -172,7 +172,7 @@ describe("opaService", () => {
           headers: request.headers,
         },
       },
-      { headers: { "Content-Type": "application/json" } }
+      { headers: { "Content-Type": "application/json" } },
     );
   });
 });

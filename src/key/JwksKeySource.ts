@@ -14,7 +14,7 @@ export default class JwksKeySource implements KeySource {
   constructor(
     jwksUri: string,
     requiredIssuer: string,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
   ) {
     this.jwksUri = jwksUri;
     this.requiredIssuer = requiredIssuer;
@@ -22,7 +22,7 @@ export default class JwksKeySource implements KeySource {
 
   async loadKeysFromSource(): Promise<LoadedPublicKey[]> {
     const response = await lastValueFrom(
-      this.httpService.get<{ keys: JsonWebKey[] }>(this.jwksUri)
+      this.httpService.get<{ keys: JsonWebKey[] }>(this.jwksUri),
     );
 
     const keys = response.data.keys;
@@ -48,7 +48,7 @@ export default class JwksKeySource implements KeySource {
       pubKey,
       this,
       this.requiredIssuer,
-      key.alg as string
+      key.alg as string,
     );
   }
 }

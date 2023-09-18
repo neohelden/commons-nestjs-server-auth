@@ -14,7 +14,7 @@ export default class LoadedPublicKey {
     publicKey: KeyObject,
     keySource: KeySource,
     requiredIssuer: string,
-    sigAlgorythm: string
+    sigAlgorythm: string,
   ) {
     this._kid = kid;
     this._publicKey = publicKey;

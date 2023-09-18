@@ -26,13 +26,13 @@ export default class AuthService {
   constructor(
     private readonly publicKeyLoader: PublicKeyLoader,
     private readonly configService: ConfigService,
-    private httpService: HttpService
+    private httpService: HttpService,
   ) {
     const keys: AuthKeysConfigType[] = [];
 
     try {
       keys.push(
-        ...JSON.parse(this.configService.getOrThrow("auth.keys") || "[]")
+        ...JSON.parse(this.configService.getOrThrow("auth.keys") || "[]"),
       );
     } catch (e) {
       this.logger.warn("Failed to parse auth.keys");
@@ -51,12 +51,12 @@ export default class AuthService {
           new OpenIdProviderKeySource(
             key.location,
             key.requiredIssuer,
-            this.httpService
-          )
+            this.httpService,
+          ),
         );
       } else if (key.type === "JWKS") {
         this.publicKeyLoader.addKeySource(
-          new JwksKeySource(key.location, key.requiredIssuer, this.httpService)
+          new JwksKeySource(key.location, key.requiredIssuer, this.httpService),
         );
       }
     }
@@ -68,7 +68,7 @@ export default class AuthService {
       for (const issuer of issuers.split(",")) {
         this.logger.verbose("Issuer: " + issuer);
         this.publicKeyLoader.addKeySource(
-          new OpenIdProviderKeySource(issuer, issuer, this.httpService)
+          new OpenIdProviderKeySource(issuer, issuer, this.httpService),
         );
       }
     }
@@ -102,7 +102,7 @@ export default class AuthService {
 
     const loadedPublicKey = await this.publicKeyLoader.getLoadedPublicKey(
       kid,
-      x5t
+      x5t,
     );
 
     this.logger.verbose("Loaded public key: " + inspect(loadedPublicKey));
