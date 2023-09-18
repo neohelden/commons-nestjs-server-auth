@@ -18,7 +18,7 @@ export interface AuthModuleOptions {
   exports: [AuthService],
 })
 export default class AuthModule {
-  forRoot(opts: AuthModuleOptions = {}): DynamicModule {
+  static forRoot(opts: AuthModuleOptions = {}): DynamicModule {
     return {
       module: AuthModule,
       global: opts.isGlobal,
