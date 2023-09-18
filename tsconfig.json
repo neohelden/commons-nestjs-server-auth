@@ -19,7 +19,8 @@
 
     "resolveJsonModule": true,
     "noUncheckedIndexedAccess": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src", "test"],
   "exclude": ["node_modules", "dist"]
