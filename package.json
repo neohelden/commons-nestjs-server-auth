@@ -1,0 +1,69 @@
+{
+  "name": "@neohelden/commons-nestjs-server-auth",
+  "version": "0.0.0",
+  "repository": "git@github.com:neohelden/neohelden-commons-nestjs-server-auth.git",
+  "author": "msg systems ag",
+  "license": "UNLICENSED",
+  "private": false,
+  "dependencies": {
+    "@nestjs/axios": "3.0.0",
+    "@nestjs/common": "10.2.5",
+    "@nestjs/config": "3.1.1",
+    "jsonwebtoken": "9.0.2",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "7.8.1"
+  },
+  "peerDependencies": {
+    "@nestjs/axios": "^3.0.0",
+    "@nestjs/core": "^10.0.0"
+  },
+  "devDependencies": {
+    "@neohelden/eslint-config": "1.2.48",
+    "@types/jest": "29.5.4",
+    "@types/jsonwebtoken": "9.0.2",
+    "@types/node": "20.6.0",
+    "axios": "1.5.0",
+    "eslint": "8.49.0",
+    "jest": "29.7.0",
+    "jest-sonar-reporter": "2.0.0",
+    "prettier": "2.8.8",
+    "ts-jest": "29.1.1",
+    "typescript": "5.2.2"
+  },
+  "scripts": {
+    "prettier": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "jest",
+    "test:unit": "jest unit",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint src && prettier -c ."
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*"
+  ],
+  "types": "dist/index.d.ts",
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "../coverage",
+    "testResultsProcessor": "jest-sonar-reporter",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.test\\.ts$",
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ]
+  }
+}

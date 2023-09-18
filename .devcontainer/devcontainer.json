@@ -1,0 +1,48 @@
+{
+  "name": "neohelden-commins-nestjs-server-auth",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20-bookworm",
+  "features": {
+    "ghcr.io/dhoeric/features/opa:1": {}
+  },
+  "mounts": [
+    "source=${localWorkspaceFolderBasename}-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          },
+          "typescript.preferences.importModuleSpecifier": "relative",
+          "javascript.preferences.importModuleSpecifier": "relative"
+        }
+      },
+      "extensions": [
+        "streetsidesoftware.code-spell-checker",
+        "ryanluker.vscode-coverage-gutters",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "tsandall.opa"
+      ]
+    },
+
+    "codespaces": {}
+  },
+  "portsAttributes": {},
+  "containerEnv": {
+    "NODE_ENV": "development"
+  },
+  "remoteEnv": {},
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "20gb"
+  },
+  "postCreateCommand": "sudo chown node -R node_modules; git config --global --add safe.directory ${containerWorkspaceFolder}; git config --global url.\"https://github.com/\".insteadOf git@github.com:; yarn install"
+}

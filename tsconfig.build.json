@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "incremental": false,
+    "removeComments": false,
+    "sourceMap": false,
+    "declaration": true
+  },
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "test", "dist", "**/*.test.ts"]
+}
