@@ -15,7 +15,7 @@ export default class OpenIdProviderKeySource implements KeySource {
   constructor(
     issuerUrl: string,
     requiredIssuer: string,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
   ) {
     this.issuerUrl = issuerUrl;
     this.requiredIssuer = requiredIssuer;
@@ -27,7 +27,7 @@ export default class OpenIdProviderKeySource implements KeySource {
     this.logger.debug("Loading discovery doc from " + discoveryDocPath);
 
     const discoveryDocPromise = await lastValueFrom(
-      this.httpService.get<Discovery>(discoveryDocPath)
+      this.httpService.get<Discovery>(discoveryDocPath),
     );
 
     const discoveryDoc = discoveryDocPromise.data;
@@ -35,7 +35,7 @@ export default class OpenIdProviderKeySource implements KeySource {
     return new JwksKeySource(
       discoveryDoc.jwks_uri,
       this.requiredIssuer,
-      this.httpService
+      this.httpService,
     ).loadKeysFromSource();
   }
 }

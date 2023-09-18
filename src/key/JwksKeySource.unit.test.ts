@@ -14,7 +14,7 @@ describe("jwksKeySource", () => {
     source = new JwksKeySource(
       "https://example.com",
       "https://example.com",
-      httpService as unknown as HttpService
+      httpService as unknown as HttpService,
     );
   });
 
@@ -37,7 +37,7 @@ describe("jwksKeySource", () => {
             },
           } as never);
           subscriber.complete();
-        })
+        }),
       );
 
       const keys = await source.loadKeysFromSource();
@@ -49,7 +49,7 @@ describe("jwksKeySource", () => {
           expect.anything(),
           source,
           "https://example.com",
-          "RS256"
+          "RS256",
         ),
       ]);
     });

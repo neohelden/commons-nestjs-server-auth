@@ -34,14 +34,14 @@ export default class PublicKeyLoader {
       this.keysByX5t.set(loadedKey.x5t, loadedKey);
     }
     this.logger.verbose(
-      "Keys: " + Array.from(this.keysByKid.values()).map((key) => key.kid)
+      "Keys: " + Array.from(this.keysByKid.values()).map((key) => key.kid),
     );
     this.logger.verbose("Reloading keys done");
   }
 
   public async getLoadedPublicKey(
     kid: string,
-    x5t?: string
+    x5t?: string,
   ): Promise<LoadedPublicKey | null> {
     this.logger.verbose("Getting loaded public key");
     const existingKey = this._getLoadedPublicKey(kid, x5t);
@@ -58,7 +58,7 @@ export default class PublicKeyLoader {
 
   private _getLoadedPublicKey(
     kid: string,
-    x5t?: string
+    x5t?: string,
   ): LoadedPublicKey | null {
     this.logger.verbose("Getting loaded public key");
     this.logger.verbose("kid: " + kid);

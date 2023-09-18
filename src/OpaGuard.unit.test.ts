@@ -31,7 +31,7 @@ describe("opaGuard", () => {
     opaGuard = new OPAGuard(
       configService as never,
       authService as never,
-      opaService as never
+      opaService as never,
     );
   });
 

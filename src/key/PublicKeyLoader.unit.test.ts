@@ -22,7 +22,7 @@ describe("publicKeyLoader", () => {
         keyPair.publicKey,
         null as unknown as KeySource,
         "https://example.com",
-        "RSA"
+        "RSA",
       );
 
       await publicKeyLoader.addKeySource({
@@ -30,7 +30,7 @@ describe("publicKeyLoader", () => {
       } as KeySource);
 
       await expect(
-        publicKeyLoader.getLoadedPublicKey("test", "test")
+        publicKeyLoader.getLoadedPublicKey("test", "test"),
       ).resolves.toStrictEqual(key);
     });
   });
@@ -38,7 +38,7 @@ describe("publicKeyLoader", () => {
   describe("getLoadedPublicKey", () => {
     it("should return null if no key is found", async () => {
       await expect(
-        publicKeyLoader.getLoadedPublicKey("test", "test")
+        publicKeyLoader.getLoadedPublicKey("test", "test"),
       ).resolves.toBeNull();
     });
 
@@ -49,7 +49,7 @@ describe("publicKeyLoader", () => {
         keyPair.publicKey,
         null as unknown as KeySource,
         "https://example.com",
-        "RSA"
+        "RSA",
       );
 
       await publicKeyLoader.addKeySource({
@@ -57,7 +57,7 @@ describe("publicKeyLoader", () => {
       } as KeySource);
 
       await expect(
-        publicKeyLoader.getLoadedPublicKey("test", "test")
+        publicKeyLoader.getLoadedPublicKey("test", "test"),
       ).resolves.toStrictEqual(key);
     });
 
@@ -68,7 +68,7 @@ describe("publicKeyLoader", () => {
         keyPair.publicKey,
         null as unknown as KeySource,
         "https://example.com",
-        "RSA"
+        "RSA",
       );
 
       const loadKeysFromSource = jest
@@ -82,7 +82,7 @@ describe("publicKeyLoader", () => {
 
       const loadedKey = await publicKeyLoader.getLoadedPublicKey(
         "test",
-        "test"
+        "test",
       );
 
       // eslint-disable-next-line no-magic-numbers

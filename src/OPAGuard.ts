@@ -16,7 +16,7 @@ export default class OPAGuard implements CanActivate {
   constructor(
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
-    private readonly opaService: OPAService
+    private readonly opaService: OPAService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -55,7 +55,7 @@ export default class OPAGuard implements CanActivate {
         token,
         method,
         requestUrl,
-        request.headers
+        request.headers,
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));
