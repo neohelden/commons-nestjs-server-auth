@@ -252,5 +252,3 @@ test-report.xml
 # Ignore all local history of files
 .history
 .ionide
-
-src/protos/
