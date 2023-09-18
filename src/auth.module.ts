@@ -17,6 +17,9 @@ export interface AuthModuleOptions {
   imports: [HttpModule],
   exports: [AuthService],
 })
+/**
+ * This Module provides authentication and authorization services.
+ */
 export default class AuthModule {
   static forRoot(opts: AuthModuleOptions = {}): DynamicModule {
     return {
