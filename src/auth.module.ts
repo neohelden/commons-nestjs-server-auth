@@ -25,6 +25,9 @@ export default class AuthModule {
     return {
       module: AuthModule,
       global: opts.isGlobal,
+      imports: [ConfigModule, HttpModule],
+      providers: [AuthService, PublicKeyLoader],
+      exports: [AuthService],
     };
   }
 }
