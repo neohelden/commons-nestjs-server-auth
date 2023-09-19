@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import AuthService from "./service/AuthService";
 import PublicKeyLoader from "./key/PublicKeyLoader";
-import { ConfigService } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { HttpModule } from "@nestjs/axios";
 
 export interface AuthModuleOptions {
@@ -13,8 +13,8 @@ export interface AuthModuleOptions {
 }
 
 @Module({
-  providers: [AuthService, PublicKeyLoader, ConfigService],
-  imports: [HttpModule],
+  providers: [AuthService, PublicKeyLoader],
+  imports: [HttpModule, ConfigModule],
   exports: [AuthService],
 })
 /**
