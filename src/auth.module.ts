@@ -2,10 +2,11 @@ import { HttpModule } from "@nestjs/axios";
 import { DynamicModule, Module, ModuleMetadata } from "@nestjs/common";
 import PublicKeyLoader from "./key/PublicKeyLoader";
 import AuthService, { AuthServiceOptions } from "./service/AuthService";
-import { OpaServiceOptions } from "./service/OPAService";
+import OPAService, { OpaServiceOptions } from "./service/OPAService";
+import { AUTH_MODULE_OPTIONS_TOKEN } from "./consts";
+import OPAGuard from "./OPAGuard";
 
-export const AUTH_MODULE_OPTIONS_TOKEN = "AUTH_MODULE_OPTIONS_TOKEN";
-export interface AuthModuleOptions {
+export type AuthModuleOptions = {
   /**
    * If "true", registers `AuthModule` as a global module.
    * See: https://docs.nestjs.com/modules#global-modules
@@ -31,15 +32,15 @@ export interface AuthModuleOptions {
      */
     contextPath?: string;
   };
-}
+};
 
 export interface AuthModuleAsyncOptions
   extends Pick<ModuleMetadata, "imports"> {
-  name?: string;
   useFactory: (
     ...args: any[]
   ) => Promise<AuthModuleOptions> | AuthModuleOptions;
   inject?: any[];
+  isGlobal?: boolean;
 }
 
 /**
@@ -65,19 +66,24 @@ export default class AuthModule {
   }
 
   static forRootAsync(opts: AuthModuleAsyncOptions): DynamicModule {
+    const authModDiOpts = {
+      provide: AUTH_MODULE_OPTIONS_TOKEN,
+      useFactory: opts.useFactory,
+      inject: opts.inject ?? [],
+    };
+
     return {
+      global: opts.isGlobal,
       module: AuthModule,
-      imports: [HttpModule],
+      imports: [HttpModule, ...(opts.imports ?? [])],
       providers: [
+        authModDiOpts,
+        OPAService,
         AuthService,
+        OPAGuard,
         PublicKeyLoader,
-        {
-          provide: AUTH_MODULE_OPTIONS_TOKEN,
-          useFactory: opts.useFactory,
-          inject: opts.inject,
-        },
       ],
-      exports: [AuthService],
+      exports: [AuthService, OPAGuard, OPAService, authModDiOpts],
     };
   }
 }

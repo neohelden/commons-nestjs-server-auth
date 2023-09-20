@@ -6,9 +6,10 @@ import {
   Logger,
 } from "@nestjs/common";
 import { inspect } from "util";
-import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "./auth.module";
+import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
+import { AUTH_MODULE_OPTIONS_TOKEN } from "./consts";
 
 @Injectable()
 export default class OPAGuard implements CanActivate {
