@@ -44,7 +44,7 @@ export default class OPAService {
   constructor(
     private readonly httpService: HttpService,
     @Inject(AUTH_MODULE_OPTIONS_TOKEN)
-    private readonly authOpts: AuthModuleOptions
+    private readonly authOpts: AuthModuleOptions,
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export default class OPAService {
     token: string,
     httpMethod: string,
     path: string,
-    headers: Map<string, string>
+    headers: Map<string, string>,
   ): Promise<Map<string, unknown>> {
     const config = this.authOpts.opa;
     const disable = config.disableOpa === true;
@@ -93,7 +93,7 @@ export default class OPAService {
           "Content-Type": "application/json",
         },
         timeout: config.opaClient?.timeout ?? 500,
-      }
+      },
     );
 
     const claims = await this.transformResponse(res);
@@ -113,7 +113,7 @@ export default class OPAService {
   }
 
   private transformResponse(
-    res: Observable<AxiosResponse<OPAResponse>>
+    res: Observable<AxiosResponse<OPAResponse>>,
   ): Promise<Map<string, unknown>> {
     const obs: Observable<Map<string, unknown>> = new Observable(
       (subscriber) => {
@@ -136,7 +136,7 @@ export default class OPAService {
             const opaResponse = result;
 
             const constraints = new Map<string, unknown>(
-              Object.entries(opaResponse)
+              Object.entries(opaResponse),
             );
 
             subscriber.next(constraints);
@@ -145,7 +145,7 @@ export default class OPAService {
             subscriber.complete();
           },
         });
-      }
+      },
     );
 
     return lastValueFrom(obs);

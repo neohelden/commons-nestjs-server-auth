@@ -26,7 +26,7 @@ describe("opaGuard", () => {
     opaGuard = new OPAGuard(
       authService as never,
       opaService as never,
-      authModOpts
+      authModOpts,
     );
   });
 
@@ -52,7 +52,7 @@ describe("opaGuard", () => {
         }),
       } as unknown as ExecutionContext;
     });
-    it.only("should bypass when auth is disabled", async () => {
+    it("should bypass when auth is disabled", async () => {
       authModOpts.auth.disableAuth = true;
 
       const result = await opaGuard.canActivate(context);

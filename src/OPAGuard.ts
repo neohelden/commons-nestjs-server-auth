@@ -19,11 +19,11 @@ export default class OPAGuard implements CanActivate {
     private readonly authService: AuthService,
     private readonly opaService: OPAService,
     @Inject(AUTH_MODULE_OPTIONS_TOKEN)
-    private readonly options: AuthModuleOptions
+    private readonly options: AuthModuleOptions,
   ) {
     if (options.auth.disableAuth) {
       this.logger.warn(
-        "Authentication is disabled. This setting should never be used in production."
+        "Authentication is disabled. This setting should never be used in production.",
       );
     }
   }
@@ -62,7 +62,7 @@ export default class OPAGuard implements CanActivate {
         token,
         method,
         requestUrl,
-        request.headers
+        request.headers,
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));
