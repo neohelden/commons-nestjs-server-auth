@@ -11,8 +11,9 @@ import { AUTH_MODULE_OPTIONS_TOKEN } from "../consts";
 export interface OpaServiceOptions {
   /**
    * Disable OPA. This is useful for testing.
+   * @default false
    */
-  disableOpa: boolean;
+  disableOpa?: boolean;
   /**
    * Base URL of the OPA server.
    */
@@ -42,7 +43,8 @@ export default class OPAService {
   private readonly logger = new Logger(OPAService.name);
   constructor(
     private readonly httpService: HttpService,
-    @Inject(AUTH_MODULE_OPTIONS_TOKEN) readonly authOpts: AuthModuleOptions,
+    @Inject(AUTH_MODULE_OPTIONS_TOKEN)
+    private readonly authOpts: AuthModuleOptions
   ) {}
 
   /**
@@ -54,10 +56,10 @@ export default class OPAService {
     token: string,
     httpMethod: string,
     path: string,
-    headers: Map<string, string>,
+    headers: Map<string, string>
   ): Promise<Map<string, unknown>> {
     const config = this.authOpts.opa;
-    const disable = config.disableOpa;
+    const disable = config.disableOpa === true;
 
     if (disable) {
       this.logger.warn("OPA is disabled");
@@ -91,7 +93,7 @@ export default class OPAService {
           "Content-Type": "application/json",
         },
         timeout: config.opaClient?.timeout ?? 500,
-      },
+      }
     );
 
     const claims = await this.transformResponse(res);
@@ -111,7 +113,7 @@ export default class OPAService {
   }
 
   private transformResponse(
-    res: Observable<AxiosResponse<OPAResponse>>,
+    res: Observable<AxiosResponse<OPAResponse>>
   ): Promise<Map<string, unknown>> {
     const obs: Observable<Map<string, unknown>> = new Observable(
       (subscriber) => {
@@ -134,7 +136,7 @@ export default class OPAService {
             const opaResponse = result;
 
             const constraints = new Map<string, unknown>(
-              Object.entries(opaResponse),
+              Object.entries(opaResponse)
             );
 
             subscriber.next(constraints);
@@ -143,7 +145,7 @@ export default class OPAService {
             subscriber.complete();
           },
         });
-      },
+      }
     );
 
     return lastValueFrom(obs);
