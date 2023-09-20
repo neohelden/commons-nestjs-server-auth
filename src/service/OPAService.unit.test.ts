@@ -1,30 +1,32 @@
-import OPAService from "./OPAService";
 import { HttpService } from "@nestjs/axios";
 import { Observable } from "rxjs";
-import { ConfigService } from "@nestjs/config";
-import OpaJwtPrincipal from "../OpaJwtPrincipal";
 import JWTPrincipal from "../JwtPrincipal";
+import OpaJwtPrincipal from "../OpaJwtPrincipal";
+import { AuthModuleOptions } from "../auth.module";
+import OPAService from "./OPAService";
 
 describe("opaService", () => {
   let opaService: OPAService;
-  let configService: jest.Mocked<Pick<ConfigService, "get" | "getOrThrow">>;
   let httpService: jest.Mocked<Pick<HttpService, "post">>;
+  let authModOpts: AuthModuleOptions;
 
   let request;
   const token = "test";
 
-  let config: Map<string, unknown>;
-
   beforeEach(async () => {
-    config = new Map<string, unknown>([
-      ["auth.disableAuth", false],
-      ["http.contextPath", "/"],
-    ]);
-
-    configService = {
-      get: jest.fn().mockImplementation((key) => config.get(key)),
-      getOrThrow: jest.fn().mockImplementation((key) => config.get(key)),
+    authModOpts = {
+      opa: {
+        baseUrl: "https://example.com",
+        policyPackage: "test",
+      },
+      auth: {
+        disableAuth: false,
+      },
+      http: {
+        contextPath: "/",
+      },
     };
+
     httpService = {
       post: jest.fn(),
     };
@@ -35,13 +37,13 @@ describe("opaService", () => {
       jwtPrincipal: new JWTPrincipal(token, new Map([["test", "yes"]])),
     };
 
-    config.set("opa.disable", false);
-    config.set("opa.url", "https://example.com");
-    config.set("opa.package", "test");
+    authModOpts.opa.disableOpa = false;
+    authModOpts.opa.baseUrl = "https://example.com";
+    authModOpts.opa.policyPackage = "test";
 
     request.headers.authorization = "Bearer " + token;
 
-    opaService = new OPAService(httpService as never, configService as never);
+    opaService = new OPAService(httpService as never, authModOpts);
   });
 
   it("should call opa", async () => {
@@ -100,6 +102,7 @@ describe("opaService", () => {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 500,
       },
     );
   });
@@ -120,7 +123,7 @@ describe("opaService", () => {
       request.headers,
     );
 
-    await expect(result).rejects.toBe("ERR_OPA_UNAIAVAILABLE");
+    await expect(result).rejects.toBe("ERR_OPA_UNAVAILABLE");
     expect(httpService.post).toHaveBeenCalledWith(
       "https://example.com/v1/data/test",
       {
@@ -135,6 +138,7 @@ describe("opaService", () => {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 500,
       },
     );
   });
@@ -172,7 +176,7 @@ describe("opaService", () => {
           headers: request.headers,
         },
       },
-      { headers: { "Content-Type": "application/json" } },
+      { headers: { "Content-Type": "application/json" }, timeout: 500 },
     );
   });
 });

@@ -1,37 +1,32 @@
 import { ExecutionContext } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import OPAGuard from "./OPAGuard";
+import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
 
 describe("opaGuard", () => {
   let opaGuard: OPAGuard;
-  let configService: jest.Mocked<Pick<ConfigService, "get" | "getOrThrow">>;
   let opaService: jest.Mocked<Pick<OPAService, keyof OPAService>>;
   let authService: jest.Mocked<Pick<AuthService, keyof AuthService>>;
-  let config: Map<string, unknown>;
+  let authModOpts: AuthModuleOptions;
 
   beforeEach(async () => {
-    config = new Map<string, unknown>([
-      ["auth.disableAuth", false],
-      ["http.contextPath", "/"],
-    ]);
-
-    configService = {
-      get: jest.fn().mockImplementation((key) => config.get(key)),
-      getOrThrow: jest.fn().mockImplementation((key) => config.get(key)),
-    };
     opaService = {
       auth: jest.fn(),
     };
     authService = {
       auth: jest.fn(),
     };
+    authModOpts = {
+      auth: { disableAuth: false },
+      opa: { disableOpa: false, baseUrl: "h", policyPackage: "t" },
+      http: {},
+    };
 
     opaGuard = new OPAGuard(
-      configService as never,
       authService as never,
       opaService as never,
+      authModOpts,
     );
   });
 
@@ -58,7 +53,7 @@ describe("opaGuard", () => {
       } as unknown as ExecutionContext;
     });
     it("should bypass when auth is disabled", async () => {
-      config.set("auth.disableAuth", "true");
+      authModOpts.auth.disableAuth = true;
 
       const result = await opaGuard.canActivate(context);
 
@@ -80,7 +75,7 @@ describe("opaGuard", () => {
     });
 
     it("should call authService", async () => {
-      config.set("opa.disable", "true");
+      authModOpts.opa.disableOpa = true;
       authService.auth.mockResolvedValueOnce(new Map([["test", "yes"]]));
 
       request.headers.authorization = "Bearer " + token;
@@ -92,7 +87,7 @@ describe("opaGuard", () => {
     });
 
     it("should return false when authService throws", async () => {
-      config.set("opa.disable", true);
+      authModOpts.opa.disableOpa = true;
       authService.auth.mockRejectedValueOnce("test");
 
       request.headers.authorization = "Bearer " + token;

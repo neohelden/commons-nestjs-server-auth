@@ -1,14 +1,14 @@
 import { HttpService } from "@nestjs/axios";
-import { ConfigService } from "@nestjs/config";
 import OpenIdProviderKeySource from "../key/OpenIdProviderKeySource";
 import PublicKeyLoader from "../key/PublicKeyLoader";
 import AuthService from "./AuthService";
 
 import { KeyPairKeyObjectResult, generateKeyPairSync } from "crypto";
 import jwt from "jsonwebtoken";
+import { AuthModuleOptions } from "../auth.module";
+import JwksKeySource from "../key/JwksKeySource";
 import KeySource from "../key/KeySource";
 import LoadedPublicKey from "../key/LoadedPublicKey";
-import JwksKeySource from "../key/JwksKeySource";
 
 type PublicClass<T> = jest.Mocked<Pick<T, keyof T>>;
 
@@ -16,7 +16,7 @@ describe("authentication", () => {
   let authService: AuthService;
   let publicKeyLoader: PublicClass<PublicKeyLoader>;
   let httpService: Pick<PublicClass<HttpService>, "get">;
-  let configService: PublicClass<ConfigService>;
+  let authModOpts: AuthModuleOptions;
 
   beforeEach(async () => {
     publicKeyLoader = {
@@ -27,23 +27,10 @@ describe("authentication", () => {
     httpService = {
       get: jest.fn(),
     };
-    configService = {
-      getOrThrow: jest.fn(),
-      get: jest.fn(),
-    };
-    configService.getOrThrow.mockReturnValueOnce([]);
-
-    authService = new AuthService(
-      publicKeyLoader as never,
-      configService as never,
-      httpService as never,
-    );
-  });
-
-  describe("constructor", () => {
-    it("should  load OpenID keys", () => {
-      configService.getOrThrow.mockReturnValue(
-        JSON.stringify([
+    authModOpts = {
+      auth: {
+        disableAuth: false,
+        authKeys: [
           {
             type: "OPEN_ID_DISCOVERY",
             location: "https://example.com",
@@ -54,13 +41,27 @@ describe("authentication", () => {
             location: "https://example.com",
             requiredIssuer: "https://example.com",
           },
-        ]),
-      );
-      configService.get.mockReturnValue("");
+        ],
+      },
+      opa: {
+        disableOpa: false,
+        baseUrl: "https://example.com",
+        policyPackage: "test",
+      },
+    };
 
+    authService = new AuthService(
+      authModOpts,
+      publicKeyLoader as never,
+      httpService as never,
+    );
+  });
+
+  describe("constructor", () => {
+    it("should  load OpenID keys", () => {
       authService = new AuthService(
+        authModOpts,
         publicKeyLoader as unknown as PublicKeyLoader,
-        configService as unknown as ConfigService,
         httpService as unknown as HttpService,
       );
 

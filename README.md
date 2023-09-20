@@ -1,6 +1,6 @@
 # neohelden-commons-nestjs-server-auth
 
-This module provides common mechanisms for NestJS to perform JWT server authentication. Additonally the use
+This module provides common mechanisms for NestJS to perform JWT server authentication. Additionally the use
 of the [Open Poilcy Agent](https://www.openpolicyagent.org/) is supported.
 
 
@@ -31,56 +31,38 @@ class Controller {
 
 ## Configuration 
 
-The configuration is done using the `@nestjs/config` module.
-Configs are queried using the `.` syntax. So `auth.keys` corresponds to the array of key sources.
-The config service must guarantee to load these properties. 
+The configuration of this module is accomplished using NestJS Dynamic modules. 
+Therefore import the `AuthModule` in your `AppModule` and provide the configuration.
 
-### Authorization Configuration
+Example: 
 
-This module utilizes a scoped `@nestjs/config` approach. The following configuration options are available:
-
-```yaml
-auth:
-  # Disable all authentication, should be NEVER true in production
-  disableAuth: false
-  # Definition of key sources providing public keys to verify signed tokens.
-  keys:
-    # Public keys will be loaded from the OpenID provider using discovery.
-  - type: OPEN_ID_DISCOVERY
-    location: https://keycloak.example.com/auth/realms/my-realm
-    requiredIssuer: https://keycloak.example.com/auth/realms/my-realm
-  - # Public keys will be loaded directly from the JWKS url of the OpenID provider.
-    type: JWKS
-    location: https://keycloak.example.com/auth/realms/my-realm/protocol/openid-connect/certs
-    requiredIssuer: https://keycloak.example.com/auth/realms/my-realm
-  # Comma separated string of OPEN_ID_DISCOVERY key sources with required issuer. Can be used to
-  # shorten the configuration when the discovery base URL matches the iss claim, the IDP sets.
-  # The value used for configuration here must exactly match the iss claim.
-  # keys and issuers can be used at the same time. Both are added to the accepted key sources.
-  issuers: "https://keycloak.example.com/auth/realms/my-realm, https://keycloak.example.com/auth/realms/my-other-realm"
-```
-
-
-
-### OPA Configuration
-
-The module supports the use of the [Open Policy Agent](https://www.openpolicyagent.org/) to perform authorization decisions.
-
- The following configuration options are available:
-
-```yaml
-opa:
-  # Disable authorization. An empty prinicpal is created with an empty set of constraints
-  disableOpa: false
-  # Url to the OPA sidecar
-  baseUrl: http://localhost:8181
-  # Package name of the policy file that should be evaluated for authorization decision
-  # The package name is used to resolve the full path
-  policyPackage: http.authz
-  # Advanced configuration of the HTTP client that is used to call the Open Policy Agent
-  opaClient:
-    # timeout for OPA requests, default 500ms
-    timeout: 500ms
+```typescript
+AuthModule.forRootAsync({
+  isGlobal: true,
+  useFactory: async (configService: ConfigService) => {
+    console.log("Using factory");
+    return {
+      opa: {
+        disableOpa: configService.get<boolean>("opa.disable"),
+        baseUrl: configService.get<string>("opa.url"),
+        policyPackage: configService.get<string>("opa.package"),
+        opaClient: {
+          timeout: configService.get<number>("opa.opaClient.timeout"),
+        },
+      },
+      auth: {
+        disableAuth: configService.getOrThrow<boolean>("auth.disableAuth"),
+        authIssuers: configService
+          .get<string>("auth.issuers")
+          ?.trim()
+          .split(","),
+        authKeys: configService.get("auth.keys"),
+      },
+    } as AuthModuleOptions;
+  },
+  inject: [ConfigService],
+  imports: [ConfigModule],
+}),
 ```
 
 ### OPA Evaluation
