@@ -1,9 +1,10 @@
-import { DynamicModule, Module } from "@nestjs/common";
-import AuthService from "./service/AuthService";
-import PublicKeyLoader from "./key/PublicKeyLoader";
-import { ConfigModule } from "@nestjs/config";
 import { HttpModule } from "@nestjs/axios";
+import { DynamicModule, Module, ModuleMetadata } from "@nestjs/common";
+import PublicKeyLoader from "./key/PublicKeyLoader";
+import AuthService, { AuthServiceOptions } from "./service/AuthService";
+import { OpaServiceOptions } from "./service/OPAService";
 
+export const AUTH_MODULE_OPTIONS_TOKEN = "AUTH_MODULE_OPTIONS_TOKEN";
 export interface AuthModuleOptions {
   /**
    * If "true", registers `AuthModule` as a global module.
@@ -11,40 +12,60 @@ export interface AuthModuleOptions {
    */
   isGlobal?: boolean;
 
-  disableAuth?: boolean;
-  authKeys?: string[];
-  authIssuers?: string[];
-
-  disableOpa?: boolean;
-  opaBaseUrl?: string;
-  opaPolicyPackage?: string;
+  /**
+   * Options for the `AuthService`.
+   */
+  auth: AuthServiceOptions;
+  /**
+   * Options for the `OPAService`.
+   */
+  opa: OpaServiceOptions;
 }
 
-@Module({
-  providers: [AuthService, PublicKeyLoader],
-  imports: [HttpModule, ConfigModule],
-  exports: [AuthService],
-})
+export interface AuthModuleAsyncOptions
+  extends Pick<ModuleMetadata, "imports"> {
+  name?: string;
+  useFactory: (
+    ...args: any[]
+  ) => Promise<AuthModuleOptions> | AuthModuleOptions;
+  inject?: any[];
+}
+
 /**
  * This Module provides authentication and authorization services.
  */
+@Module({})
 export default class AuthModule {
-  static forRoot(opts: AuthModuleOptions = {}): DynamicModule {
+  static forRoot(opts: AuthModuleOptions): DynamicModule {
     return {
       module: AuthModule,
       global: opts.isGlobal,
-      imports: [ConfigModule, HttpModule],
-      providers: [AuthService, PublicKeyLoader],
+      imports: [HttpModule],
+      providers: [
+        AuthService,
+        PublicKeyLoader,
+        {
+          provide: AUTH_MODULE_OPTIONS_TOKEN,
+          useValue: opts,
+        },
+      ],
       exports: [AuthService],
     };
   }
 
-  static forRootAsync(opts: AuthModuleOptions = {}): DynamicModule {
+  static forRootAsync(opts: AuthModuleAsyncOptions): DynamicModule {
     return {
       module: AuthModule,
-      global: opts.isGlobal,
-      imports: [ConfigModule, HttpModule],
-      providers: [AuthService, PublicKeyLoader],
+      imports: [HttpModule],
+      providers: [
+        AuthService,
+        PublicKeyLoader,
+        {
+          provide: AUTH_MODULE_OPTIONS_TOKEN,
+          useFactory: opts.useFactory,
+          inject: opts.inject,
+        },
+      ],
       exports: [AuthService],
     };
   }

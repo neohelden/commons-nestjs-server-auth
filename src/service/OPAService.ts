@@ -1,11 +1,33 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AxiosResponse } from "axios";
 import { Observable, lastValueFrom } from "rxjs";
+import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "src/auth.module";
 import { inspect } from "util";
-import OpaJwtPrincipal from "../OpaJwtPrincipal";
 import JWTPrincipal from "../JwtPrincipal";
+import OpaJwtPrincipal from "../OpaJwtPrincipal";
+
+export interface OpaServiceOptions {
+  /**
+   * Disable OPA. This is useful for testing.
+   */
+  disableOpa: boolean;
+  /**
+   * Base URL of the OPA server.
+   */
+  baseUrl: string;
+  /**
+   * OPA policy package.
+   */
+  policyPackage: string;
+  opaClient?: {
+    /**
+     * Timeout in ms for the OPA client.
+     * @default 500
+     */
+    timeout?: number;
+  };
+}
 
 export declare type OPAResponse = {
   result: {
@@ -19,7 +41,7 @@ export default class OPAService {
   private readonly logger = new Logger(OPAService.name);
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
+    @Inject(AUTH_MODULE_OPTIONS_TOKEN) readonly authOpts: AuthModuleOptions,
   ) {}
 
   /**
@@ -33,16 +55,16 @@ export default class OPAService {
     path: string,
     headers: Map<string, string>,
   ): Promise<Map<string, unknown>> {
-    const disable =
-      this.configService.getOrThrow<string>("opa.disable") === "true";
+    const config = this.authOpts.opa;
+    const disable = config.disableOpa;
 
     if (disable) {
       this.logger.warn("OPA is disabled");
       return new Map();
     }
 
-    const opaUrl = this.configService.getOrThrow<string>("opa.url");
-    const opaPackage = this.configService.getOrThrow<string>("opa.package");
+    const opaUrl = config.baseUrl;
+    const opaPackage = config.policyPackage;
 
     const callUrl =
       opaUrl + (opaUrl.endsWith("/") ? "" : "/") + "v1/data/" + opaPackage;
@@ -67,6 +89,7 @@ export default class OPAService {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: config.opaClient?.timeout ?? 500,
       },
     );
 
@@ -94,7 +117,7 @@ export default class OPAService {
         res.subscribe({
           error: (e) => {
             this.logger.warn("Error while contacting OPA: " + e);
-            subscriber.error("ERR_OPA_UNAIAVAILABLE");
+            subscriber.error("ERR_OPA_UNAVAILABLE");
           },
           next: (r) => {
             const data = r.data;

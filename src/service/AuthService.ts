@@ -1,12 +1,31 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { inspect } from "util";
+import JWTPrincipal from "../JwtPrincipal";
+import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "../auth.module";
 import JwksKeySource from "../key/JwksKeySource";
 import OpenIdProviderKeySource from "../key/OpenIdProviderKeySource";
 import PublicKeyLoader from "../key/PublicKeyLoader";
-import { inspect } from "util";
-import JWTPrincipal from "../JwtPrincipal";
+
+export interface AuthServiceOptions {
+  /**
+   * Comma separated string of OPEN_ID_DISCOVERY key sources with required issuer. Can be used to
+   * shorten the configuration when the discovery base URL matches the iss claim, the IDP sets.
+   * The value used for configuration here must exactly match the iss claim.
+   * keys and issuers can be used at the same time. Both are added to the accepted key sources.
+   */
+  authIssuers?: string[];
+  /**
+   * List of JWKS Key Sources with required issuer. Can be used to configure keys for
+   */
+
+  authKeys?: AuthKeysConfigType[];
+  /**
+   * Disable authentication. This is useful for testing.
+   */
+  disableAuth: boolean;
+}
 
 type AuthKeysConfigType =
   | {
@@ -25,21 +44,24 @@ export default class AuthService {
   private logger = new Logger(AuthService.name);
   constructor(
     private readonly publicKeyLoader: PublicKeyLoader,
-    private readonly configService: ConfigService,
+    @Inject(AUTH_MODULE_OPTIONS_TOKEN) readonly authOpts: AuthModuleOptions,
     private httpService: HttpService,
   ) {
     const keys: AuthKeysConfigType[] = [];
+    const config = authOpts.auth;
 
     try {
-      keys.push(
-        ...JSON.parse(this.configService.getOrThrow("auth.keys") || "[]"),
-      );
+      keys.push(...(config.authKeys ?? []));
     } catch (e) {
       this.logger.warn("Failed to parse auth.keys");
       this.logger.warn(e);
     }
 
-    const issuers = this.configService.get<string>("auth.issuers") ?? "";
+    const issuers = config.authIssuers ?? "";
+
+    if (!config.authIssuers && !config.authKeys) {
+      this.logger.warn("No auth keys or issuers configured");
+    }
 
     this.logger.debug("Loading keys");
     this.logger.verbose("Keys: " + inspect(keys));
@@ -63,14 +85,13 @@ export default class AuthService {
 
     this.logger.debug("Loading issuers");
     this.logger.verbose("Issuers: " + issuers);
-    if (issuers.trim().length !== 0) {
-      this.logger.debug("Found issuers");
-      for (const issuer of issuers.split(",")) {
-        this.logger.verbose("Issuer: " + issuer);
-        this.publicKeyLoader.addKeySource(
-          new OpenIdProviderKeySource(issuer, issuer, this.httpService),
-        );
-      }
+
+    this.logger.debug("Found issuers");
+    for (const issuer of issuers) {
+      this.logger.verbose("Issuer: " + issuer);
+      this.publicKeyLoader.addKeySource(
+        new OpenIdProviderKeySource(issuer, issuer, this.httpService),
+      );
     }
 
     this.logger.debug("Loading keys done");
