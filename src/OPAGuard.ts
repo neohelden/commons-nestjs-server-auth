@@ -19,7 +19,7 @@ export default class OPAGuard implements CanActivate {
     private readonly authService: AuthService,
     private readonly opaService: OPAService,
     @Inject(AUTH_MODULE_OPTIONS_TOKEN)
-    private readonly options: AuthModuleOptions
+    private readonly options: AuthModuleOptions,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -53,7 +53,7 @@ export default class OPAGuard implements CanActivate {
         token,
         method,
         requestUrl,
-        request.headers
+        request.headers,
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));
