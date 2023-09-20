@@ -10,6 +10,14 @@ export interface AuthModuleOptions {
    * See: https://docs.nestjs.com/modules#global-modules
    */
   isGlobal?: boolean;
+
+  disableAuth?: boolean;
+  authKeys?: string[];
+  authIssuers?: string[];
+
+  disableOpa?: boolean;
+  opaBaseUrl?: string;
+  opaPolicyPackage?: string;
 }
 
 @Module({
@@ -22,6 +30,16 @@ export interface AuthModuleOptions {
  */
 export default class AuthModule {
   static forRoot(opts: AuthModuleOptions = {}): DynamicModule {
+    return {
+      module: AuthModule,
+      global: opts.isGlobal,
+      imports: [ConfigModule, HttpModule],
+      providers: [AuthService, PublicKeyLoader],
+      exports: [AuthService],
+    };
+  }
+
+  static forRootAsync(opts: AuthModuleOptions = {}): DynamicModule {
     return {
       module: AuthModule,
       global: opts.isGlobal,
