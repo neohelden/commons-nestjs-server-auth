@@ -2,7 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AxiosResponse } from "axios";
 import { Observable, lastValueFrom } from "rxjs";
-import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "src/auth.module";
+import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "../auth.module";
 import { inspect } from "util";
 import JWTPrincipal from "../JwtPrincipal";
 import OpaJwtPrincipal from "../OpaJwtPrincipal";
