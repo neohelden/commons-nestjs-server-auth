@@ -20,6 +20,17 @@ export interface AuthModuleOptions {
    * Options for the `OPAService`.
    */
   opa: OpaServiceOptions;
+
+  /**
+   * Options for http server
+   */
+  http?: {
+    /**
+     * Base path of the http server.
+     * @default "/"
+     */
+    contextPath?: string;
+  };
 }
 
 export interface AuthModuleAsyncOptions

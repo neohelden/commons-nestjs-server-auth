@@ -1,11 +1,12 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   Logger,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { inspect } from "util";
+import { AUTH_MODULE_OPTIONS_TOKEN, AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
 
@@ -14,21 +15,17 @@ export default class OPAGuard implements CanActivate {
   private readonly logger = new Logger(OPAGuard.name);
 
   constructor(
-    private readonly configService: ConfigService,
     private readonly authService: AuthService,
     private readonly opaService: OPAService,
+    @Inject(AUTH_MODULE_OPTIONS_TOKEN)
+    private readonly options: AuthModuleOptions
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (this.configService.getOrThrow<string>("auth.disableAuth") === "true") {
-      this.logger.warn("Authentication is disabled");
-      return true;
-    }
-
     const request = context.switchToHttp().getRequest();
     const authorization = request.headers.authorization;
 
-    const prefix = this.configService.getOrThrow<string>("http.contextPath");
+    const prefix = this.options.http?.contextPath ?? "/";
     const method = request.method;
 
     const requestUrl = request.url.substring(prefix.length - 1);
@@ -55,7 +52,7 @@ export default class OPAGuard implements CanActivate {
         token,
         method,
         requestUrl,
-        request.headers,
+        request.headers
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));
