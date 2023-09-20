@@ -1,8 +1,10 @@
-export default class JwtPrincipal {
+export default class JwtPrincipal<
+  JC extends Record<string, unknown> = Record<string, unknown>,
+> {
   readonly jwt: string;
-  readonly claims: Map<string, unknown>;
+  readonly claims: JC;
 
-  constructor(jwt: string, claims: Map<string, unknown>) {
+  constructor(jwt: string, claims: JC) {
     this.jwt = jwt;
     this.claims = claims;
   }

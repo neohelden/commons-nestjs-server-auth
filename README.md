@@ -19,10 +19,22 @@ import {
   OpaJwtPrincipal,
 } from "@neohelden/commons-nestjs-server-auth";
 
+interface JWTClaims {
+  /**
+   * tenant id
+   */
+  tid: string
+}
+
+interface OPAConstraints {
+  constraint1: boolean
+  constraint2: string[]
+}
+
 class Controller {
     @UseGuards(OPAGuard)
     @Get("/")
-    public getSomethingSecure(@OPAPrincipal(): opaPrincipal: OpaJwtPrincipal) {
+    public getSomethingSecure(@OPAPrincipal() opaPrincipal: OpaJwtPrincipal<JWTClaims, OPAConstraints>) {
         const constraints = opaPrincipal.constraints;
         return constraints
     }

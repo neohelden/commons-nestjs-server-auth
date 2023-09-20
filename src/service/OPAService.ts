@@ -57,13 +57,13 @@ export default class OPAService {
     httpMethod: string,
     path: string,
     headers: Map<string, string>,
-  ): Promise<Map<string, unknown>> {
+  ): Promise<OpaJwtPrincipal["constraints"]> {
     const config = this.authOpts.opa;
     const disable = config.disableOpa === true;
 
     if (disable) {
       this.logger.warn("OPA is disabled");
-      return new Map();
+      return {};
     }
 
     const opaUrl = config.baseUrl;
@@ -98,8 +98,8 @@ export default class OPAService {
 
     const claims = await this.transformResponse(res);
 
-    if (!claims.get("allow")) {
-      this.logger.debug("OPA returned allow: " + claims.get("allow"));
+    if (claims.allow !== true) {
+      this.logger.debug("OPA returned allow: " + claims.allow);
       throw new Error("ERR_OPA_FORBIDDEN");
     }
 
@@ -114,8 +114,8 @@ export default class OPAService {
 
   private transformResponse(
     res: Observable<AxiosResponse<OPAResponse>>,
-  ): Promise<Map<string, unknown>> {
-    const obs: Observable<Map<string, unknown>> = new Observable(
+  ): Promise<OpaJwtPrincipal["constraints"]> {
+    const obs: Observable<OpaJwtPrincipal["constraints"]> = new Observable(
       (subscriber) => {
         res.subscribe({
           error: (e) => {
@@ -135,9 +135,7 @@ export default class OPAService {
 
             const opaResponse = result;
 
-            const constraints = new Map<string, unknown>(
-              Object.entries(opaResponse),
-            );
+            const constraints = opaResponse;
 
             subscriber.next(constraints);
           },

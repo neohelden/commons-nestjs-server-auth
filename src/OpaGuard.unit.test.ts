@@ -76,7 +76,7 @@ describe("opaGuard", () => {
 
     it("should call authService", async () => {
       authModOpts.opa.disableOpa = true;
-      authService.auth.mockResolvedValueOnce(new Map([["test", "yes"]]));
+      authService.auth.mockResolvedValueOnce({ test: "yes" });
 
       request.headers.authorization = "Bearer " + token;
 
