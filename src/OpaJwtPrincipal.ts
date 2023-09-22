@@ -1,6 +1,6 @@
 export default class OpaJwtPrincipal<
-  JC extends Map<string, unknown> = Map<string, unknown>,
-  OC extends Map<string, unknown> = Map<string, unknown>,
+  JC extends Record<string, unknown> = Record<string, unknown>,
+  OC extends Record<string, unknown> = Record<string, unknown>,
 > {
   /**
    * The JSON Web Token for the User

@@ -103,9 +103,9 @@ export default class AuthService {
    * Authorizes a user. This is accomplished by validating the JWT and returning the claims.
    *
    * @param token The JWT of a user.
-   * @returns A Map of cliams from the JWT.
+   * @returns The claims of the JWT
    */
-  public async auth(request, token: string): Promise<Map<string, unknown>> {
+  public async auth(request, token: string): Promise<Record<string, unknown>> {
     const decoded = jwt.decode(token, { complete: true });
 
     if (!decoded) {
@@ -142,7 +142,7 @@ export default class AuthService {
       throw new Error("ERR_AUTH_INVALID_TOKEN");
     }
 
-    const claims = new Map(Object.entries(payload));
+    const claims = payload;
 
     request.jwtPrincipal = new JWTPrincipal(token, claims);
 

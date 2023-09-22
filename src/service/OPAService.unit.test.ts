@@ -34,7 +34,7 @@ describe("opaService", () => {
       headers: {},
       url: "/test/test",
       method: "TEST",
-      jwtPrincipal: new JWTPrincipal(token, new Map([["test", "yes"]])),
+      jwtPrincipal: new JWTPrincipal(token, { test: "yes" }),
     };
 
     authModOpts.opa.disableOpa = false;
@@ -53,7 +53,7 @@ describe("opaService", () => {
           data: {
             result: {
               allow: true,
-              constaint1: "test",
+              constraint1: "test",
               constraint2: ["test1", "test2"],
             },
           },
@@ -70,22 +70,20 @@ describe("opaService", () => {
       request.headers,
     );
 
-    expect(result).toStrictEqual(
-      new Map<string, unknown>([
-        ["allow", true],
-        ["constaint1", "test"],
-        ["constraint2", ["test1", "test2"]],
-      ]),
-    );
+    expect(result).toStrictEqual({
+      allow: true,
+      constraint1: "test",
+      constraint2: ["test1", "test2"],
+    });
     expect(request.opaPrincipal).toStrictEqual(
       new OpaJwtPrincipal(
         token,
-        new Map([["test", "yes"]]),
-        new Map<string, unknown>([
-          ["allow", true],
-          ["constaint1", "test"],
-          ["constraint2", ["test1", "test2"]],
-        ]),
+        { test: "yes" },
+        {
+          allow: true,
+          constraint1: "test",
+          constraint2: ["test1", "test2"],
+        },
       ),
     );
     expect(httpService.post).toHaveBeenCalledWith(
