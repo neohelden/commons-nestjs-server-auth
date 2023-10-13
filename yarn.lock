@@ -598,16 +598,16 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@neohelden/eslint-config@1.2.52":
-  version "1.2.52"
-  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-1.2.52.tgz#cb010d5279d7995d6e72095d056dc51295288f71"
-  integrity sha512-dR4CqE8AmGlPelkEIHrkU5YzXQftyrXLVFZnLEMnaBPmhCVLcnjfjY7EEy2LvobRAQRxHqWdPVszF72JQYcH3g==
+"@neohelden/eslint-config@1.2.53":
+  version "1.2.53"
+  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-1.2.53.tgz#ce5b0b8e83b9c312ec3c3b485fac01de88539b50"
+  integrity sha512-F1rR4JF9szo5pgGnYasiqWjujRx7dTpxVKEpMLddtNquOD/9gWzKJgOLzBfUt567XD1exMn+3OKld+KxGYzXhA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "5.62.0"
     "@typescript-eslint/parser" "5.62.0"
     eslint-config-prettier "9.0.0"
     eslint-plugin-jest "27.4.2"
-    eslint-plugin-prettier "5.0.0"
+    eslint-plugin-prettier "5.0.1"
     eslint-plugin-react-hooks "4.6.0"
 
 "@nestjs/axios@3.0.0":
@@ -1385,10 +1385,10 @@ eslint-plugin-jest@27.4.2:
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
-eslint-plugin-prettier@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.0.0.tgz#6887780ed95f7708340ec79acfdf60c35b9be57a"
-  integrity sha512-AgaZCVuYDXHUGxj/ZGu1u8H8CYgDY3iG6w5kUFw4AzMVXzB7VvbKgYR4nATIN+OvUrghMbiDLeimVjVY5ilq3w==
+eslint-plugin-prettier@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-5.0.1.tgz#a3b399f04378f79f066379f544e42d6b73f11515"
+  integrity sha512-m3u5RnR56asrwV/lDC4GHorlW75DsFfmUcjfCYylTUs85dBRnB7VM6xG8eCMJdeDRnppzmxZVf1GEPJvl1JmNg==
   dependencies:
     prettier-linter-helpers "^1.0.0"
     synckit "^0.8.5"
