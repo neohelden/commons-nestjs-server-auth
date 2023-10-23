@@ -20,7 +20,7 @@
   "devDependencies": {
     "@neohelden/eslint-config": "1.2.53",
     "@types/jest": "29.5.5",
-    "@types/jsonwebtoken": "9.0.3",
+    "@types/jsonwebtoken": "9.0.4",
     "@types/node": "20.8.6",
     "axios": "1.5.1",
     "eslint": "8.52.0",
