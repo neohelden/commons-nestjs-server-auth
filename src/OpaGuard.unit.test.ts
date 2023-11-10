@@ -97,5 +97,38 @@ describe("opaGuard", () => {
       expect(authService.auth).toHaveBeenCalledWith(request, token);
       expect(result).toBe(false);
     });
+
+    it.each([
+      ["/test/a", "/test", "/a"],
+      ["/test/a", "/test/", "/a"],
+      ["/test/a", "/", "/test/a"],
+      ["/test/a", undefined, "/test/a"],
+      ["/test", "/test", ""],
+      ["/test", "/test/", ""],
+      ["/test/", "/test", "/"],
+      ["/test/", "/test/", "/"],
+    ])(
+      "should pass the correct path to OPAGuard with input %s, context: %s",
+      async (path, contextPath, expected) => {
+        authModOpts.http = { contextPath };
+
+        opaService.auth.mockResolvedValueOnce({ test: "yes" });
+
+        request.headers.authorization = "Bearer " + token;
+        request.url = path;
+
+        await opaGuard.canActivate(context);
+
+        expect(opaService.auth).toHaveBeenCalledWith(
+          request,
+          token,
+          "TEST",
+          expected,
+          {
+            authorization: "Bearer " + token,
+          }
+        );
+      }
+    );
   });
 });
