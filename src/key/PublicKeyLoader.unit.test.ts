@@ -35,6 +35,16 @@ describe("publicKeyLoader", () => {
     });
   });
 
+  describe("reloadKeys", () => {
+    it("should not throw if a keysource is not available", async () => {
+      await publicKeyLoader.addKeySource({
+        loadKeysFromSource: () => Promise.reject(new Error("test")),
+      } as KeySource);
+
+      await expect(publicKeyLoader.reloadKeys()).resolves.toBeUndefined();
+    });
+  });
+
   describe("getLoadedPublicKey", () => {
     it("should return null if no key is found", async () => {
       await expect(
