@@ -24,7 +24,10 @@ export default class PublicKeyLoader {
       keys.push(keySource.loadKeysFromSource());
     }
 
-    const keyResults = (await Promise.all(keys)).flat();
+    const keyResults = (await Promise.allSettled(keys))
+      .filter((p) => p.status === "fulfilled")
+      .map((p) => p as PromiseFulfilledResult<LoadedPublicKey[]>)
+      .flatMap((p) => p.value);
 
     // Reset all keys to remove expired keys
     this.keysByKid.clear();
