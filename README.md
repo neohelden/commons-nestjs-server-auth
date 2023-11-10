@@ -1,7 +1,7 @@
 # neohelden-commons-nestjs-server-auth
 
 This module provides common mechanisms for NestJS to perform JWT server authentication. Additionally the use
-of the [Open Poilcy Agent](https://www.openpolicyagent.org/) is supported.
+of the [Open Policy Agent](https://www.openpolicyagent.org/) is supported.
 
 
 ## Auth Bundle
@@ -13,7 +13,8 @@ An example for OPA enabled decision is:
 import {
   Get,
   UseGuards,
-} from "@nestjs/common";import {
+} from "@nestjs/common";
+import {
   OPAGuard,
   OPAPrincipal,
   OpaJwtPrincipal,
@@ -55,7 +56,7 @@ AuthModule.forRootAsync({
     console.log("Using factory");
     return {
       opa: {
-        disableOpa: configService.get<boolean>("opa.disable"),
+        disableOpa: configService.get<string>("opa.disable") === "true",
         baseUrl: configService.get<string>("opa.url"),
         policyPackage: configService.get<string>("opa.package"),
         opaClient: {
@@ -63,7 +64,7 @@ AuthModule.forRootAsync({
         },
       },
       auth: {
-        disableAuth: configService.getOrThrow<boolean>("auth.disableAuth"),
+        disableAuth: configService.getOrThrow<string>("auth.disableAuth") === "true",
         authIssuers: configService
           .get<string>("auth.issuers")
           ?.trim()
@@ -116,4 +117,4 @@ constraint3[token.payload.sub].    # always a set that contains the 'sub' claim 
                                    # or is empty if no token is present
 ```
 
-The resuts of this policy are then added to the `@OPAPrincipal` Decorator available for requests. 
+The results of this policy are then added to the `@OPAPrincipal` Decorator available for requests. 
