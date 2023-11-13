@@ -35,7 +35,9 @@ export default class OPAGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authorization = request.headers.authorization;
 
-    const prefix = this.options.http?.contextPath ?? "/";
+    const contextPath = this.options.http?.contextPath ?? "/";
+
+    const prefix = contextPath.endsWith("/") ? contextPath : contextPath + "/";
     const method = request.method;
 
     const requestUrl = request.url.substring(prefix.length - 1);
