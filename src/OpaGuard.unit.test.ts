@@ -126,9 +126,9 @@ describe("opaGuard", () => {
           expected,
           {
             authorization: "Bearer " + token,
-          }
+          },
         );
-      }
+      },
     );
   });
 });
