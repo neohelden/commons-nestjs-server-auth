@@ -632,10 +632,10 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@neohelden/eslint-config@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-1.4.0.tgz#07edbb9f5c37fdb92fb80ce8a37b45fe9c8ea8e3"
-  integrity sha512-0+zLefnbxMqPFA6Q3U4PNVQty4beAdlH3l4KrewCLOxKhUaZlO4h3Er0xYgPuFi6sVjT/M0yhcYGkQhf1a8t7Q==
+"@neohelden/eslint-config@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-1.4.1.tgz#70b22656c16d6e81a7d22f033ee59db4b6f8105b"
+  integrity sha512-8h5hlBpjVCvNY/zCv/CUQtYWGDmwdY6YWjbnmCu3uHIDnVdir2O9f4ZVlDLwq5U1D/M43piQuGf1ctgtI/BdsA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "5.62.0"
     "@typescript-eslint/parser" "5.62.0"
