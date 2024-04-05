@@ -28,7 +28,7 @@
     "jest-sonar-reporter": "2.0.0",
     "prettier": "3.2.5",
     "ts-jest": "29.1.1",
-    "typescript": "5.4.3"
+    "typescript": "5.4.4"
   },
   "scripts": {
     "prettier": "prettier --check .",
