@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "repository": "git@github.com:neohelden/neohelden-commons-nestjs-server-auth.git",
   "author": "msg systems ag",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "private": false,
   "dependencies": {
     "@nestjs/axios": "3.0.2",
