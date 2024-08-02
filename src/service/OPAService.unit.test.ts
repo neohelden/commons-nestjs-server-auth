@@ -4,6 +4,7 @@ import JWTPrincipal from "../JwtPrincipal";
 import OpaJwtPrincipal from "../OpaJwtPrincipal";
 import { AuthModuleOptions } from "../auth.module";
 import OPAService from "./OPAService";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 describe("opaService", () => {
   let opaService: OPAService;

@@ -3,6 +3,7 @@ import OPAGuard from "./OPAGuard";
 import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 describe("opaGuard", () => {
   let opaGuard: OPAGuard;

@@ -9,6 +9,7 @@ import { AuthModuleOptions } from "../auth.module";
 import JwksKeySource from "../key/JwksKeySource";
 import KeySource from "../key/KeySource";
 import LoadedPublicKey from "../key/LoadedPublicKey";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 type PublicClass<T> = jest.Mocked<Pick<T, keyof T>>;
 

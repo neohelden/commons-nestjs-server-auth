@@ -1,11 +1,11 @@
 version: 2
 
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: daily
-      time: '02:00'
+      time: "02:00"
       timezone: Europe/Berlin
     open-pull-requests-limit: 5
     commit-message:
@@ -14,10 +14,10 @@ updates:
       include: scope
 
   - package-ecosystem: npm
-    directory: '/.'
+    directory: "/."
     schedule:
       interval: daily
-      time: '02:00'
+      time: "02:00"
       timezone: Europe/Berlin
     open-pull-requests-limit: 5
     commit-message:
