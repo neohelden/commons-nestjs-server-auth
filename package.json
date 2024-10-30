@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "private": false,
   "dependencies": {
-    "@nestjs/axios": "3.1.0",
+    "@nestjs/axios": "3.1.1",
     "@nestjs/common": "10.4.6",
     "@nestjs/config": "3.3.0",
     "jsonwebtoken": "9.0.2",
