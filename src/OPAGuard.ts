@@ -32,8 +32,23 @@ export default class OPAGuard implements CanActivate {
     if (this.options.auth.disableAuth) {
       return true;
     }
-    const request = context.switchToHttp().getRequest();
-    const authorization = request.headers.authorization;
+
+    const http  = context.switchToHttp()
+const rpc = context.switchToRpc()
+
+
+let request, authorization;
+
+if (http) {
+
+     request = context.switchToHttp().getRequest();
+     authorization = request.headers.authorization;
+} else if (rpc) {
+      request = rpc.getContext()
+      authorization = request.headers.authorization;
+} else {
+      throw new Error('Unsupported context type')
+}
 
     const contextPath = this.options.http?.contextPath ?? "/";
 
