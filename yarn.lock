@@ -683,7 +683,7 @@
     iterare "1.2.1"
     tslib "2.8.1"
 
-"@nestjs/config@^3.3.0":
+"@nestjs/config@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-3.3.0.tgz#ddc520ba26a8453ee5e690e18fb7b35e9bac7974"
   integrity sha512-pdGTp8m9d0ZCrjTpjkUbZx6gyf2IKf+7zlkrPNMsJzYZ4bFRRTpXrnj+556/5uiI6AfL5mMrJc2u7dB6bvM+VA==
