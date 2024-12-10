@@ -252,7 +252,7 @@ describe("opaGuard", () => {
 
       const result = request(client);
 
-      await expect(result).rejects.toThrow();
+      await expect(result).rejects.toThrow("Forbidden resource");
     });
 
     it("should throw when authorization header is not a bearer token", async () => {
@@ -266,7 +266,7 @@ describe("opaGuard", () => {
 
       const result = request(client, metadata);
 
-      await expect(result).rejects.toThrow();
+      await expect(result).rejects.toThrow("Forbidden resource");
     });
 
     it("should call authService", async () => {
