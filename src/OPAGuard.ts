@@ -10,6 +10,7 @@ import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
 import { AUTH_MODULE_OPTIONS_TOKEN } from "./consts";
+import { Metadata } from "@grpc/grpc-js";
 
 @Injectable()
 export default class OPAGuard implements CanActivate {
@@ -28,19 +29,52 @@ export default class OPAGuard implements CanActivate {
     }
   }
 
+  // eslint-disable-next-line max-lines-per-function
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (this.options.auth.disableAuth) {
       return true;
     }
-    const request = context.switchToHttp().getRequest();
-    const authorization = request.headers.authorization;
 
-    const contextPath = this.options.http?.contextPath ?? "/";
+    const contextType = context.getType();
 
-    const prefix = contextPath.endsWith("/") ? contextPath : contextPath + "/";
-    const method = request.method;
+    let request: Record<string, any>;
+    let authorization: string | undefined;
+    let method: string;
+    let requestUrl: string;
+    let headers: Record<string, string>;
 
-    const requestUrl = request.url.substring(prefix.length - 1);
+    if (contextType === "http") {
+      request = context.switchToHttp().getRequest();
+      authorization = request.headers.authorization;
+
+      const contextPath = this.options.http?.contextPath ?? "/";
+
+      const prefix = contextPath.endsWith("/")
+        ? contextPath
+        : contextPath + "/";
+      method = request.method;
+
+      requestUrl = request.url.substring(prefix.length - 1);
+
+      headers = request.headers;
+    } else if (contextType === "rpc") {
+      const rpc = context.switchToRpc();
+      const meta = rpc.getContext<Metadata>();
+      authorization = meta.get("authorization")?.[0]?.toString();
+
+      request = rpc;
+      method = "POST"; // RPC is always POST
+
+      const serverStream = context.getArgByIndex(2);
+
+      requestUrl = serverStream.path;
+
+      const metaMap = meta.getMap();
+      headers = metaMap as Record<string, string>;
+    } else {
+      this.logger.warn("Unsupported context type: " + contextType);
+      throw new Error("Unsupported context type: " + contextType);
+    }
 
     if (!authorization) {
       return false;
@@ -48,7 +82,7 @@ export default class OPAGuard implements CanActivate {
 
     const [type, token] = authorization.split(" ");
 
-    if (type !== "Bearer") {
+    if (type !== "Bearer" || !token) {
       return false;
     }
 
@@ -64,7 +98,7 @@ export default class OPAGuard implements CanActivate {
         token,
         method,
         requestUrl,
-        request.headers,
+        headers,
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));

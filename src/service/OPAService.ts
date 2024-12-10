@@ -56,7 +56,7 @@ export default class OPAService {
     token: string,
     httpMethod: string,
     path: string,
-    headers: Map<string, string>,
+    headers: Record<string, string>,
   ): Promise<OpaJwtPrincipal["constraints"]> {
     const config = this.authOpts.opa;
     const disable = config.disableOpa === true;
