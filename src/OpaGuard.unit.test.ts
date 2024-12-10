@@ -179,9 +179,9 @@ describe("opaGuard", () => {
             expected,
             expect.objectContaining({
               authorization: "Bearer " + token,
-            })
+            }),
           );
-        }
+        },
       );
     });
   });
@@ -190,7 +190,7 @@ describe("opaGuard", () => {
     let app: INestMicroservice;
     let request: (
       client: ServiceClient,
-      metadata?: grpc.Metadata
+      metadata?: grpc.Metadata,
     ) => Promise<string | undefined>;
     let testService: grpc.ServiceClientConstructor;
 
@@ -207,7 +207,7 @@ describe("opaGuard", () => {
       await app.listen();
 
       const proto = protoLoader.loadSync(
-        join(__dirname, "..", "test", "test.proto")
+        join(__dirname, "..", "test", "test.proto"),
       );
       const packageDefinition = grpc.loadPackageDefinition(proto);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -223,7 +223,7 @@ describe("opaGuard", () => {
             }
 
             resolve(response.message);
-          })
+          }),
         );
     });
 
@@ -236,7 +236,7 @@ describe("opaGuard", () => {
 
       const client = new testService(
         "localhost:5000",
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
       );
 
       const result = request(client);
@@ -247,7 +247,7 @@ describe("opaGuard", () => {
     it("should throw when no authorization header is present", async () => {
       const client = new testService(
         "localhost:5000",
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
       );
 
       const result = request(client);
@@ -258,7 +258,7 @@ describe("opaGuard", () => {
     it("should throw when authorization header is not a bearer token", async () => {
       const client = new testService(
         "localhost:5000",
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
       );
 
       const metadata = new grpc.Metadata();
@@ -275,7 +275,7 @@ describe("opaGuard", () => {
 
       const client = new testService(
         "localhost:5000",
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
       );
 
       const metadata = new grpc.Metadata();
@@ -294,7 +294,7 @@ describe("opaGuard", () => {
 
       const client = new testService(
         "localhost:5000",
-        grpc.credentials.createInsecure()
+        grpc.credentials.createInsecure(),
       );
 
       const metadata = new grpc.Metadata();
@@ -311,7 +311,7 @@ describe("opaGuard", () => {
         "/test.TestService/Test",
         expect.objectContaining({
           authorization: "Bearer test",
-        })
+        }),
       );
     });
   });
