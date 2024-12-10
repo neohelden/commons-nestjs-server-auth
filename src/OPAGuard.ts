@@ -10,6 +10,7 @@ import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
 import { AUTH_MODULE_OPTIONS_TOKEN } from "./consts";
+import { Metadata } from "@grpc/grpc-js";
 
 @Injectable()
 export default class OPAGuard implements CanActivate {
@@ -19,43 +20,61 @@ export default class OPAGuard implements CanActivate {
     private readonly authService: AuthService,
     private readonly opaService: OPAService,
     @Inject(AUTH_MODULE_OPTIONS_TOKEN)
-    private readonly options: AuthModuleOptions,
+    private readonly options: AuthModuleOptions
   ) {
     if (options.auth.disableAuth) {
       this.logger.warn(
-        "Authentication is disabled. This setting should never be used in production.",
+        "Authentication is disabled. This setting should never be used in production."
       );
     }
   }
 
+  // eslint-disable-next-line max-lines-per-function
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (this.options.auth.disableAuth) {
       return true;
     }
 
-    const http  = context.switchToHttp()
-const rpc = context.switchToRpc()
+    const contextType = context.getType();
 
+    let request: Record<string, any>;
+    let authorization: string | undefined;
+    let method: string;
+    let requestUrl: string;
+    let headers: Record<string, string>;
 
-let request, authorization;
-
-if (http) {
-
-     request = context.switchToHttp().getRequest();
-     authorization = request.headers.authorization;
-} else if (rpc) {
-      request = rpc.getContext()
+    if (contextType === "http") {
+      request = context.switchToHttp().getRequest();
       authorization = request.headers.authorization;
-} else {
-      throw new Error('Unsupported context type')
-}
 
-    const contextPath = this.options.http?.contextPath ?? "/";
+      const contextPath = this.options.http?.contextPath ?? "/";
 
-    const prefix = contextPath.endsWith("/") ? contextPath : contextPath + "/";
-    const method = request.method;
+      const prefix = contextPath.endsWith("/")
+        ? contextPath
+        : contextPath + "/";
+      method = request.method;
 
-    const requestUrl = request.url.substring(prefix.length - 1);
+      requestUrl = request.url.substring(prefix.length - 1);
+
+      headers = request.headers;
+    } else if (contextType === "rpc") {
+      const rpc = context.switchToRpc();
+      const meta = rpc.getContext<Metadata>();
+      authorization = meta.get("authorization")?.[0]?.toString();
+
+      request = rpc;
+      method = "POST"; // RPC is always POST
+
+      const serverStream = context.getArgByIndex(2);
+
+      requestUrl = serverStream.path;
+
+      const metaMap = meta.getMap();
+      headers = metaMap as Record<string, string>;
+    } else {
+      this.logger.warn("Unsupported context type: " + contextType);
+      throw new Error("Unsupported context type: " + contextType);
+    }
 
     if (!authorization) {
       return false;
@@ -63,7 +82,7 @@ if (http) {
 
     const [type, token] = authorization.split(" ");
 
-    if (type !== "Bearer") {
+    if (type !== "Bearer" || !token) {
       return false;
     }
 
@@ -79,7 +98,7 @@ if (http) {
         token,
         method,
         requestUrl,
-        request.headers,
+        headers
       );
 
       this.logger.verbose("Constraints: " + inspect(constraints));

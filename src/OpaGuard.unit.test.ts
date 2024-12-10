@@ -1,13 +1,28 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+/* eslint-disable max-lines */
+import {
+  Controller,
+  Get,
+  INestApplication,
+  INestMicroservice,
+  UseGuards,
+} from "@nestjs/common";
 import OPAGuard from "./OPAGuard";
 import { AuthModuleOptions } from "./auth.module";
 import AuthService from "./service/AuthService";
 import OPAService from "./service/OPAService";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AUTH_MODULE_OPTIONS_TOKEN } from "./consts";
-import { GrpcMethod } from "@nestjs/microservices";
+import {
+  GrpcMethod,
+  MicroserviceOptions,
+  Transport,
+} from "@nestjs/microservices";
 import request from "supertest";
 import { App } from "supertest/types";
+import { join } from "path";
+import * as grpc from "@grpc/grpc-js";
+import * as protoLoader from "@grpc/proto-loader";
+import { ServiceClient } from "@grpc/grpc-js/build/src/make-client";
 
 @Controller("*")
 @UseGuards(OPAGuard)
@@ -21,13 +36,9 @@ class TestingController {
 @Controller()
 @UseGuards(OPAGuard)
 class TestingRpcController {
-  getTest() {
-    return "test";
-  }
-
-  @GrpcMethod("TestService")
+  @GrpcMethod("TestService", "Test")
   rpcTest() {
-    return "test";
+    return { message: "test" };
   }
 }
 
@@ -76,14 +87,22 @@ describe("opaGuard", () => {
   describe("authorization", () => {
     describe("http", () => {
       let http: App;
+      let app: INestApplication<App>;
 
-      beforeEach(() => {
-        http = mod
-          .createNestApplication({
-            logger: ["debug", "log", "error", "warn", "verbose"],
-          })
-          .getHttpServer();
+      beforeEach(async () => {
+        app = mod.createNestApplication<INestApplication<App>>({
+          logger: ["debug", "log", "error", "warn", "verbose"],
+        });
+
+        http = app.getHttpServer();
+
+        await app.listen(0);
       });
+
+      afterEach(async () => {
+        await app.close();
+      });
+
       const token = "test";
 
       it("should bypass when auth is disabled", async () => {
@@ -91,18 +110,22 @@ describe("opaGuard", () => {
 
         const result = await request(http).get("/").expect(200);
 
-        expect(result).toBe(true);
+        expect(result.status).toBe(200);
       });
 
       it("should throw when no authorization header is present", async () => {
-        await request(http).get("/").expect(403);
+        const result = await request(http).get("/").expect(403);
+
+        expect(result.status).toBe(403);
       });
 
       it("should throw when authorization header is not a bearer token", async () => {
-        await request(http)
+        const result = await request(http)
           .get("/")
           .set("Authorization", "Basic test")
           .expect(403);
+
+        expect(result.status).toBe(403);
       });
 
       it("should call authService", async () => {
@@ -111,8 +134,8 @@ describe("opaGuard", () => {
 
         await request(http)
           .get("/")
-          .set("Authorization", "Basic test")
-          .expect(403);
+          .set("Authorization", "Bearer test")
+          .expect(200);
 
         expect(authService.auth).toHaveBeenCalledWith(expect.anything(), token);
       });
@@ -123,7 +146,7 @@ describe("opaGuard", () => {
 
         await request(http)
           .get("/")
-          .set("Authorization", "Basic test")
+          .set("Authorization", "Bearer test")
           .expect(403);
 
         expect(authService.auth).toHaveBeenCalledWith(expect.anything(), token);
@@ -150,15 +173,145 @@ describe("opaGuard", () => {
             .expect(200);
 
           expect(opaService.auth).toHaveBeenCalledWith(
-            request,
+            expect.anything(),
             token,
-            "TEST",
+            "GET",
             expected,
-            {
+            expect.objectContaining({
               authorization: "Bearer " + token,
-            }
+            })
           );
         }
+      );
+    });
+  });
+
+  describe("grpc", () => {
+    let app: INestMicroservice;
+    let request: (
+      client: ServiceClient,
+      metadata?: grpc.Metadata
+    ) => Promise<string | undefined>;
+    let testService: grpc.ServiceClientConstructor;
+
+    beforeEach(async () => {
+      app = mod.createNestMicroservice<MicroserviceOptions>({
+        logger: ["debug", "log", "error", "warn", "verbose"],
+        transport: Transport.GRPC,
+        options: {
+          package: "test",
+          protoPath: join(__dirname, "..", "test", "test.proto"),
+        },
+      });
+
+      await app.listen();
+
+      const proto = protoLoader.loadSync(
+        join(__dirname, "..", "test", "test.proto")
+      );
+      const packageDefinition = grpc.loadPackageDefinition(proto);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      testService = (packageDefinition.test as grpc.GrpcObject)
+        .TestService! as grpc.ServiceClientConstructor;
+
+      request = async (client, metadata) =>
+        new Promise<string | undefined>((resolve, reject) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          client.Test!({}, metadata ?? new grpc.Metadata(), (err, response) => {
+            if (err) {
+              return reject(err);
+            }
+
+            resolve(response.message);
+          })
+        );
+    });
+
+    afterEach(async () => {
+      await app.close();
+    });
+
+    it("should bypass when auth is disabled", async () => {
+      authModOpts.auth.disableAuth = true;
+
+      const client = new testService(
+        "localhost:5000",
+        grpc.credentials.createInsecure()
+      );
+
+      const result = request(client);
+
+      await expect(result).resolves.toBe("test");
+    });
+
+    it("should throw when no authorization header is present", async () => {
+      const client = new testService(
+        "localhost:5000",
+        grpc.credentials.createInsecure()
+      );
+
+      const result = request(client);
+
+      await expect(result).rejects.toThrow();
+    });
+
+    it("should throw when authorization header is not a bearer token", async () => {
+      const client = new testService(
+        "localhost:5000",
+        grpc.credentials.createInsecure()
+      );
+
+      const metadata = new grpc.Metadata();
+      metadata.add("authorization", "Basic abc");
+
+      const result = request(client, metadata);
+
+      await expect(result).rejects.toThrow();
+    });
+
+    it("should call authService", async () => {
+      authModOpts.opa.disableOpa = true;
+      authService.auth.mockResolvedValueOnce({ test: "yes" });
+
+      const client = new testService(
+        "localhost:5000",
+        grpc.credentials.createInsecure()
+      );
+
+      const metadata = new grpc.Metadata();
+      metadata.add("authorization", "Bearer test");
+
+      const result = request(client, metadata);
+
+      await expect(result).resolves.toBe("test");
+
+      expect(authService.auth).toHaveBeenCalledWith(expect.anything(), "test");
+    });
+
+    it("should call opaService", async () => {
+      authService.auth.mockResolvedValueOnce({ test: "yes" });
+      opaService.auth.mockResolvedValueOnce({ test: "yes" });
+
+      const client = new testService(
+        "localhost:5000",
+        grpc.credentials.createInsecure()
+      );
+
+      const metadata = new grpc.Metadata();
+      metadata.add("authorization", "Bearer test");
+
+      const result = request(client, metadata);
+
+      await expect(result).resolves.toBe("test");
+
+      expect(opaService.auth).toHaveBeenCalledWith(
+        expect.anything(),
+        "test",
+        "POST",
+        "/test.TestService/Test",
+        expect.objectContaining({
+          authorization: "Bearer test",
+        })
       );
     });
   });
