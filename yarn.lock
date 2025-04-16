@@ -723,10 +723,10 @@
     multer "1.4.4-lts.1"
     tslib "2.8.1"
 
-"@nestjs/testing@10.4.16":
-  version "10.4.16"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-10.4.16.tgz#e314f41bfd4c96fe007b7412ba888b26c9b8a269"
-  integrity sha512-wENoQjclfdCamlExEgdNoeD5ewAb0TeHt9HgzfSiwFgcIMz43jVremrGItFdFyDvQTV6MuGXTxuBMJs22RhdJg==
+"@nestjs/testing@10.4.17":
+  version "10.4.17"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-10.4.17.tgz#f3a19309768261a380ac96ecddcef81231019e70"
+  integrity sha512-TV1fqSNqqXgp0W57jCAfhJRfsvpH+krd4RtYSa7Pu+aU9uB+xcMBn5M62G02aMU41DURVZXKNVbHsZb6meZqBQ==
   dependencies:
     tslib "2.8.1"
 
