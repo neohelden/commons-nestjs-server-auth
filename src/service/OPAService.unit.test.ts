@@ -93,7 +93,8 @@ describe("opaService", () => {
           token,
           headers: request.headers,
           httpMethod: "TEST",
-          path: ["test", "test"],query:{}
+          path: ["test", "test"],
+          query: {},
         },
       },
       {
@@ -129,7 +130,8 @@ describe("opaService", () => {
           token,
           httpMethod: "TEST",
           path: ["test", "test"],
-          headers: request.headers,query:{}
+          headers: request.headers,
+          query: {},
         },
       },
       {
@@ -171,7 +173,8 @@ describe("opaService", () => {
           token,
           httpMethod: "TEST",
           path: ["test", "test"],
-          headers: request.headers,query:{}
+          headers: request.headers,
+          query: {},
         },
       },
       { headers: { "Content-Type": "application/json" }, timeout: 500 },
@@ -210,10 +213,11 @@ describe("opaService", () => {
           token,
           httpMethod: "TEST",
           path: ["test", "test"],
-          headers: request.headers,query:{
+          headers: request.headers,
+          query: {
             param1: ["value1"],
             param2: ["value2", "value3"],
-          }
+          },
         },
       },
       { headers: { "Content-Type": "application/json" }, timeout: 500 },
