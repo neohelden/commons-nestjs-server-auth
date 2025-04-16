@@ -134,6 +134,9 @@ allow {
     # allow if path match '/contracts/:anyid'
     input.path = ["contracts", _]
 
+    # Require the querystring to contain a=b as of 'GET /contracts?a=b'
+    "b" in input.query["a"]
+
     # allow if request method 'GET' is used
     input.httpMethod == "GET"
 

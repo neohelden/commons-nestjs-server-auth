@@ -44,7 +44,7 @@ export default class OPAService {
   constructor(
     private readonly httpService: HttpService,
     @Inject(AUTH_MODULE_OPTIONS_TOKEN)
-    private readonly authOpts: AuthModuleOptions,
+    private readonly authOpts: AuthModuleOptions
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export default class OPAService {
     token: string,
     httpMethod: string,
     path: string,
-    headers: Record<string, string>,
+    headers: Record<string, string>
   ): Promise<OpaJwtPrincipal["constraints"]> {
     const config = this.authOpts.opa;
     const disable = config.disableOpa === true;
@@ -74,11 +74,25 @@ export default class OPAService {
 
     this.logger.verbose("OPA URL: " + callUrl);
 
+    // We only rely on this for the path, so we can use any host
+    const url = new URL(path, "http://invalid.host");
+
+    const pathname = url.pathname;
+
+    const queries: Record<string, string[]> = {};
+
+    url.searchParams.forEach((v, k) => {
+      const values = queries[k] ?? [];
+      values.push(v);
+      queries[k] = values;
+    });
+
     const input = {
       token,
       httpMethod,
-      path: path.substring(1).split("/"),
+      path: pathname.substring(1).split("/"),
       headers,
+      query: queries,
     };
 
     this.logger.verbose("OPA input: " + inspect(input));
@@ -93,7 +107,7 @@ export default class OPAService {
           "Content-Type": "application/json",
         },
         timeout: config.opaClient?.timeout ?? 500,
-      },
+      }
     );
 
     const claims = await this.transformResponse(res);
@@ -113,7 +127,7 @@ export default class OPAService {
   }
 
   private transformResponse(
-    res: Observable<AxiosResponse<OPAResponse>>,
+    res: Observable<AxiosResponse<OPAResponse>>
   ): Promise<OpaJwtPrincipal["constraints"]> {
     const obs: Observable<OpaJwtPrincipal["constraints"]> = new Observable(
       (subscriber) => {
@@ -143,7 +157,7 @@ export default class OPAService {
             subscriber.complete();
           },
         });
-      },
+      }
     );
 
     return lastValueFrom(obs);
