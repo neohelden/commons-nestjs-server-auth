@@ -74,11 +74,25 @@ export default class OPAService {
 
     this.logger.verbose("OPA URL: " + callUrl);
 
+    // We only rely on this for the path, so we can use any host
+    const url = new URL(path, "https://invalid.host");
+
+    const pathname = url.pathname;
+
+    const queries: Record<string, string[]> = {};
+
+    url.searchParams.forEach((v, k) => {
+      const values = queries[k] ?? [];
+      values.push(v);
+      queries[k] = values;
+    });
+
     const input = {
       token,
       httpMethod,
-      path: path.substring(1).split("/"),
+      path: pathname.substring(1).split("/"),
       headers,
+      query: queries,
     };
 
     this.logger.verbose("OPA input: " + inspect(input));

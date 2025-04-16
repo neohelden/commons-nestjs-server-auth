@@ -94,6 +94,7 @@ describe("opaService", () => {
           headers: request.headers,
           httpMethod: "TEST",
           path: ["test", "test"],
+          query: {},
         },
       },
       {
@@ -130,6 +131,7 @@ describe("opaService", () => {
           httpMethod: "TEST",
           path: ["test", "test"],
           headers: request.headers,
+          query: {},
         },
       },
       {
@@ -172,6 +174,50 @@ describe("opaService", () => {
           httpMethod: "TEST",
           path: ["test", "test"],
           headers: request.headers,
+          query: {},
+        },
+      },
+      { headers: { "Content-Type": "application/json" }, timeout: 500 },
+    );
+  });
+
+  it("should relay query parameters to OPA", async () => {
+    httpService.post.mockReturnValueOnce(
+      new Observable((s) => {
+        s.next({
+          data: {
+            result: {
+              test: { allow: true },
+            },
+          },
+        });
+        s.complete();
+      }) as never,
+    );
+
+    request.url = "/test/test?param1=value1&param2=value2&param2=value3";
+
+    const result = opaService.auth(
+      request,
+      token,
+      request.method,
+      request.url,
+      request.headers,
+    );
+
+    await expect(result).rejects.toThrow("ERR_OPA_FORBIDDEN");
+    expect(httpService.post).toHaveBeenCalledWith(
+      "https://example.com/v1/data/test",
+      {
+        input: {
+          token,
+          httpMethod: "TEST",
+          path: ["test", "test"],
+          headers: request.headers,
+          query: {
+            param1: ["value1"],
+            param2: ["value2", "value3"],
+          },
         },
       },
       { headers: { "Content-Type": "application/json" }, timeout: 500 },
