@@ -75,7 +75,7 @@ export default class OPAService {
     this.logger.verbose("OPA URL: " + callUrl);
 
     // We only rely on this for the path, so we can use any host
-    const url = new URL(path, "http://invalid.host");
+    const url = new URL(path, "https://invalid.host");
 
     const pathname = url.pathname;
 
