@@ -2,7 +2,7 @@ import { KeyPairKeyObjectResult, generateKeyPairSync } from "crypto";
 import KeySource from "./KeySource";
 import LoadedPublicKey from "./LoadedPublicKey";
 import PublicKeyLoader from "./PublicKeyLoader";
-import { beforeEach, describe, expect, it } from "@jest/globals";
+import { jest, beforeEach, describe, expect, it } from "@jest/globals";
 
 describe("publicKeyLoader", () => {
   let publicKeyLoader: PublicKeyLoader;

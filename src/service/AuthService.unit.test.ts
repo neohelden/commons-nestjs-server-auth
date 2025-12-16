@@ -133,6 +133,7 @@ describe("authentication", () => {
       token = jwt.sign({ test: "yes" }, key.privateKey, {
         algorithm: "RS256",
       });
+
       await expect(authService.auth({}, token)).rejects.toThrow(
         "ERR_AUTH_INVALID_TOKEN",
       );

@@ -2,7 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import JwksKeySource from "./JwksKeySource";
 import { Observable } from "rxjs";
 import LoadedPublicKey from "./LoadedPublicKey";
-import { beforeEach, describe, expect, it } from "@jest/globals";
+import { jest, beforeEach, describe, expect, it } from "@jest/globals";
 
 describe("jwksKeySource", () => {
   let source: JwksKeySource;
