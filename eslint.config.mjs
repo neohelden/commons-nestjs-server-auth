@@ -24,6 +24,7 @@ export default [
       "coverage",
       "eslint.config.mjs",
       ".yarn",
+      "**/*.proto",
     ],
   },
   ...compat.extends("@neohelden"),
