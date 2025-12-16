@@ -23,7 +23,14 @@ import { join } from "path";
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import { ServiceClient } from "@grpc/grpc-js/build/src/make-client";
-import { jest, afterEach, beforeEach, describe, expect, it } from "@jest/globals";
+import {
+  jest,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from "@jest/globals";
 
 @Controller("*")
 @UseGuards(OPAGuard)
