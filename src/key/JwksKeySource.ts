@@ -1,6 +1,6 @@
 import { HttpService } from "@nestjs/axios";
 import { Logger } from "@nestjs/common";
-import { JsonWebKey, createPublicKey } from "crypto";
+import { createPublicKey } from "crypto";
 import { lastValueFrom } from "rxjs";
 import { inspect } from "util";
 import KeySource from "./KeySource";
