@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { HttpService } from "@nestjs/axios";
 import { Observable } from "rxjs";
 import JWTPrincipal from "../JwtPrincipal";

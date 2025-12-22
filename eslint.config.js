@@ -18,6 +18,9 @@ module.exports = [
     env: {
       node: true,
     },
-    rules: {},
+    rules: {
+      // Disable this rule as it causes type incompatibilities with Jest 30
+      "jest/prefer-importing-jest-globals": "off",
+    },
   }),
 ];
