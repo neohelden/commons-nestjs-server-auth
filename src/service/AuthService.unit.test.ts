@@ -3,7 +3,7 @@ import OpenIdProviderKeySource from "../key/OpenIdProviderKeySource";
 import PublicKeyLoader from "../key/PublicKeyLoader";
 import AuthService from "./AuthService";
 
-import { KeyPairKeyObjectResult, generateKeyPairSync } from "crypto";
+import { KeyObject, generateKeyPairSync } from "crypto";
 import jwt from "jsonwebtoken";
 import { AuthModuleOptions } from "../auth.module";
 import JwksKeySource from "../key/JwksKeySource";
@@ -83,7 +83,7 @@ describe("authentication", () => {
   });
 
   describe("auth", () => {
-    let key: KeyPairKeyObjectResult;
+    let key: { publicKey: KeyObject; privateKey: KeyObject };
     let token: string;
 
     beforeEach(() => {
