@@ -28,7 +28,7 @@
     "@nestjs/testing": "11.1.10",
     "@types/jest": "29.5.14",
     "@types/jsonwebtoken": "9.0.10",
-    "@types/node": "22.15.9",
+    "@types/node": "25.0.3",
     "@types/supertest": "6.0.3",
     "axios": "1.13.2",
     "eslint": "8.57.1",
