@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@grpc/grpc-js": "1.14.3",
-    "@neohelden/eslint-config": "1.7.0",
+    "@neohelden/eslint-config": "2.0.164",
     "@nestjs/axios": "4.0.1",
     "@nestjs/common": "11.1.10",
     "@nestjs/config": "4.0.2",
@@ -31,7 +31,7 @@
     "@types/node": "25.0.3",
     "@types/supertest": "6.0.3",
     "axios": "1.13.2",
-    "eslint": "8.57.1",
+    "eslint": "9.39.2",
     "jest": "30.2.0",
     "jest-sonar-reporter": "2.0.0",
     "prettier": "3.7.4",

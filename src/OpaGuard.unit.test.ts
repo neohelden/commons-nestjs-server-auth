@@ -1,5 +1,13 @@
 /* eslint-disable max-lines */
 import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
+import {
   Controller,
   Get,
   INestApplication,
@@ -210,13 +218,12 @@ describe("opaGuard", () => {
         join(__dirname, "..", "test", "test.proto"),
       );
       const packageDefinition = grpc.loadPackageDefinition(proto);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       testService = (packageDefinition.test as grpc.GrpcObject)
         .TestService! as grpc.ServiceClientConstructor;
 
       request = async (client, metadata) =>
         new Promise<string | undefined>((resolve, reject) =>
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           client.Test!({}, metadata ?? new grpc.Metadata(), (err, response) => {
             if (err) {
               return reject(err);

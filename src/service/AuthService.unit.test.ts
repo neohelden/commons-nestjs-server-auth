@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { HttpService } from "@nestjs/axios";
 import OpenIdProviderKeySource from "../key/OpenIdProviderKeySource";
 import PublicKeyLoader from "../key/PublicKeyLoader";
@@ -132,6 +133,7 @@ describe("authentication", () => {
       token = jwt.sign({ test: "yes" }, key.privateKey, {
         algorithm: "RS256",
       });
+
       await expect(authService.auth({}, token)).rejects.toThrow(
         "ERR_AUTH_INVALID_TOKEN",
       );

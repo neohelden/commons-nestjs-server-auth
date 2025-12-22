@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { KeyObject, generateKeyPairSync } from "crypto";
 import KeySource from "./KeySource";
 import LoadedPublicKey from "./LoadedPublicKey";
@@ -95,7 +96,6 @@ describe("publicKeyLoader", () => {
         "test",
       );
 
-      // eslint-disable-next-line no-magic-numbers
       expect(loadKeysFromSource).toHaveBeenCalledTimes(2);
       expect(loadedKey).toStrictEqual(key);
     });
