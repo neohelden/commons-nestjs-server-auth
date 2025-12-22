@@ -16,11 +16,11 @@ jobs:
       main-branch: main
       container-verify-cmd: test 1
       auto-merge-dependabot-enabled: true
-      release-extra-plugins: '@semantic-release/npm'
-      sonar-inclusions: '**/*.ts'
-      sonar-exclusions: '**/*.test.ts'
-      prettier-source-paths: 'src/**/*.ts'
-      sonar-test-inclusions: '**/*.test.ts'
+      release-extra-plugins: "@semantic-release/npm"
+      sonar-inclusions: "**/*.ts"
+      sonar-exclusions: "**/*.test.ts"
+      prettier-source-paths: "src/**/*.ts"
+      sonar-test-inclusions: "**/*.test.ts"
 
     secrets:
       image-registry-username: ${{ secrets.HARBOR_USERNAME }}
