@@ -34,8 +34,10 @@ export type AuthModuleOptions = {
   };
 };
 
-export interface AuthModuleAsyncOptions
-  extends Pick<ModuleMetadata, "imports"> {
+export interface AuthModuleAsyncOptions extends Pick<
+  ModuleMetadata,
+  "imports"
+> {
   useFactory: (
     ...args: any[]
   ) => Promise<AuthModuleOptions> | AuthModuleOptions;
