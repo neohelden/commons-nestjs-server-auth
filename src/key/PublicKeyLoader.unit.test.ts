@@ -1,11 +1,11 @@
-import { KeyPairKeyObjectResult, generateKeyPairSync } from "crypto";
+import { KeyObject, generateKeyPairSync } from "crypto";
 import KeySource from "./KeySource";
 import LoadedPublicKey from "./LoadedPublicKey";
 import PublicKeyLoader from "./PublicKeyLoader";
 
 describe("publicKeyLoader", () => {
   let publicKeyLoader: PublicKeyLoader;
-  let keyPair: KeyPairKeyObjectResult;
+  let keyPair: { publicKey: KeyObject; privateKey: KeyObject };
 
   beforeEach(() => {
     publicKeyLoader = new PublicKeyLoader();
