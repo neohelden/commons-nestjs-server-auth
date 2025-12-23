@@ -6,9 +6,13 @@ import OpaJwtPrincipal from "../OpaJwtPrincipal";
 import { AuthModuleOptions } from "../auth.module";
 import OPAService from "./OPAService";
 
+const { HttpService: MockedHttpService } = jest.createMockFromModule(
+  "@nestjs/axios",
+) as typeof import("@nestjs/axios");
+
 describe("opaService", () => {
   let opaService: OPAService;
-  let httpService: jest.Mocked<Pick<HttpService, "post">>;
+  let httpService: jest.Mocked<HttpService>;
   let authModOpts: AuthModuleOptions;
 
   let request;
@@ -28,9 +32,8 @@ describe("opaService", () => {
       },
     };
 
-    httpService = {
-      post: jest.fn(),
-    };
+    httpService = jest.mocked(new MockedHttpService());
+
     request = {
       headers: {},
       url: "/test/test",

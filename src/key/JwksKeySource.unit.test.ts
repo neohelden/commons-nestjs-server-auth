@@ -4,14 +4,16 @@ import JwksKeySource from "./JwksKeySource";
 import { Observable } from "rxjs";
 import LoadedPublicKey from "./LoadedPublicKey";
 
+const { HttpService: MockedHttpService } = jest.createMockFromModule(
+  "@nestjs/axios",
+) as typeof import("@nestjs/axios");
+
 describe("jwksKeySource", () => {
   let source: JwksKeySource;
   let httpService: jest.Mocked<Pick<HttpService, "get">>;
 
   beforeEach(() => {
-    httpService = {
-      get: jest.fn(),
-    };
+    httpService = jest.mocked(new MockedHttpService());
     source = new JwksKeySource(
       "https://example.com",
       "https://example.com",
@@ -47,7 +49,7 @@ describe("jwksKeySource", () => {
         new LoadedPublicKey(
           "test",
           "ZG0vKF1qjdFlisQUr73rO460iQg",
-          expect.anything(),
+          expect.anything() as any,
           source,
           "https://example.com",
           "RS256",

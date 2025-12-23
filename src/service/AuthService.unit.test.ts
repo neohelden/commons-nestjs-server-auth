@@ -11,6 +11,10 @@ import JwksKeySource from "../key/JwksKeySource";
 import KeySource from "../key/KeySource";
 import LoadedPublicKey from "../key/LoadedPublicKey";
 
+const { HttpService: MockedHttpService } = jest.createMockFromModule(
+  "@nestjs/axios",
+) as typeof import("@nestjs/axios");
+
 type PublicClass<T> = jest.Mocked<Pick<T, keyof T>>;
 
 describe("authentication", () => {
@@ -25,9 +29,7 @@ describe("authentication", () => {
       reloadKeys: jest.fn(),
       getLoadedPublicKey: jest.fn(),
     };
-    httpService = {
-      get: jest.fn(),
-    };
+    httpService = jest.mocked(new MockedHttpService());
     authModOpts = {
       auth: {
         disableAuth: false,

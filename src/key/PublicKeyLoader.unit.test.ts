@@ -83,7 +83,7 @@ describe("publicKeyLoader", () => {
       );
 
       const loadKeysFromSource = jest
-        .fn()
+        .fn<() => Promise<LoadedPublicKey[]>>()
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([key]);
 
