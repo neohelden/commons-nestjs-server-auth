@@ -965,10 +965,10 @@
     "@emnapi/runtime" "^1.4.3"
     "@tybys/wasm-util" "^0.10.0"
 
-"@neohelden/eslint-config@2.0.164":
-  version "2.0.164"
-  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-2.0.164.tgz#4565982655766e154833f571443a13d8502ba416"
-  integrity sha512-o8QapP3SYUvZQXMrPcxeyBZkuw03gf+x7M/JwctXbScnIKWQ15oueWtLdTThMQeoRVHH6rlZwNYY4Q77rOUtbg==
+"@neohelden/eslint-config@2.0.165":
+  version "2.0.165"
+  resolved "https://registry.yarnpkg.com/@neohelden/eslint-config/-/eslint-config-2.0.165.tgz#be867c2e30787f242fc7b5969a40a551e55acd66"
+  integrity sha512-o5iIZAqs0rqFyruimpLI+sxr94FiyIcuu9n6YI9oaPoRNIjx3qIGzfM2pd1xRr2DTsW3qrlw3Q5GyqtlHBIX7w==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^8.0.1"
     "@typescript-eslint/parser" "^8.0.1"
