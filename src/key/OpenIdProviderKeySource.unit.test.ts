@@ -4,14 +4,16 @@ import { Observable } from "rxjs";
 import LoadedPublicKey from "./LoadedPublicKey";
 import OpenIdProviderKeySource from "./OpenIdProviderKeySource";
 
+const { HttpService: MockedHttpService } = jest.createMockFromModule(
+  "@nestjs/axios",
+) as typeof import("@nestjs/axios");
+
 describe("openIdProviderKeySource", () => {
   let source: OpenIdProviderKeySource;
   let httpService: jest.Mocked<Pick<HttpService, "get">>;
 
   beforeEach(() => {
-    httpService = {
-      get: jest.fn(),
-    };
+    httpService = jest.mocked(new MockedHttpService());
     source = new OpenIdProviderKeySource(
       "https://example.com",
       "https://example.com",
@@ -58,8 +60,8 @@ describe("openIdProviderKeySource", () => {
         new LoadedPublicKey(
           "test",
           "ZG0vKF1qjdFlisQUr73rO460iQg",
-          expect.anything(),
-          expect.anything(),
+          expect.anything() as any,
+          expect.anything() as any,
           "https://example.com",
           "RS256",
         ),
